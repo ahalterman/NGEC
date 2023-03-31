@@ -1,0 +1,65 @@
+event_type,mode,ACTOR,RECIP,LOCATION,TIME,notes
+ASSAULT,,"Who carried out an attack on {recip_text}?
+Who attacked {recip_text}?","Who was attacked by {actor_text}?
+Who did {actor_text} attack?",Where did the attack take place?,When did the attack take place?,
+COERCE,,Who coerced {recip_text}?,"Who was coerced by {actor_text}?
+Who did {actor_text} coerce?",Where did the coercion occur?,When did the coercion occur?,
+PROTEST,,"Who protested?
+Who protested against {recip_text}?","Who was the protest directed against?
+Who was {actor_text} protesting against?",Where did the protest take place?,When did the protest take place?,
+MOBILIZE,,"Who mobilized forces?
+Who mobilized forces against {recip_text}?","Who did {actor_text} mobilize forces against?
+Who was the mobilization directed against?",Where were forces mobilized?,When were forces mobilized?,
+SANCTION,,"Who sanctioned {recip_text}?
+Who punished {recip_text}?
+Who imposed sanctions against {recip_text}?","Who was sanctioned?
+Who was sanctioned by {actor_text}?",Where were sanctions imposed?,When were sanctions imposed?,
+THREATEN,,"Who threatened {recip_text}?
+Who made a threat against {recip_text}?","Who was threatened?
+Who was threatened by {actor_text}?",Where was the threat made?,When was the threat made?,
+REQUEST,,"Who made a request?
+Who requested something from {recip_text}?","Who did {actor_text} request something from?
+Who was the request directed toward?",Where was the request made?,When was the request made?,
+REJECT,,Who rejected something?,"Whose claim was rejected by someone?
+Whose claim was rejected by {actor_text}?",Where did the rejection occur?,When did the rejection occur?,
+ACCUSE,,"Who accused {recip_text} of something?
+Who accused {recip_text}?","Who was the accusation against?
+Who did {actor_text} accuse of something?",Where did the accusation occur?,When did the accusation occur?,
+CONSULT,,"Who consulted?
+Who did {recip_text} consult with?","Who consulted?
+Who did {actor_text} consult with?
+Who was consulted?",Where did the consultation occur?,When did the consultation occur?,
+AGREE,,Who agreed with {recip_text}?,Who did {actor_text} agree with?,Where was the agreement reached?,When was the agreement reached?,
+SUPPORT,,"Who gave support to {recip_text}?
+Who expressed support for {recip_text}?","Who received support?
+Who was supported by {actor_text}?",Where was support expressed?,When was support expressed?,
+CONCEDE,,"Who made a concession?
+Who made a concession to {recip_text}?","Who was the concession made to?
+Who did {actor_text} make a concession to?",Where were concessions made?,When were concessions made?,
+COOPERATE,,"Who cooperated?
+Who cooperated with {recip_text}?","Who cooperated?
+Who cooperated with {actor_text}?",Where was the agreement signed?,When was the agreement signed?,
+AID,,"Who gave aid?
+Who gave aid to {recip_text}?","Who received aid?
+Who got aid from {actor_text}?",Where was the aid delivered?,When was the aid delivered?,
+RETREAT,,"Who retreated or gave something up?
+Who retreated from {recip_text}?","Who did someone retreat from?
+Who did {actor_text} retreat from?",Where did the retreat occur?,When did the retreat occur?,
+COERCE,seize,Who seized something from {recip_text}?,Who did {actor_text} seize something from?,Where did the seizure of property take place?,When did the seizure of property take place?,
+COERCE,restrict,"Who imposed restrictions?
+Who restricted the rights of {recip_text}?",Whose rights were restricted by {actor_text}?,Where were restrictions imposed?,When were restrictions imposed?,
+COERCE,ban,Who banned {recip_text}?,Who did {actor_text} ban?,Where was the ban applied?,When was the ban applied?,
+COERCE,censor,"Who did the censoring?
+Who censored {recip_text}?","Who did {actor_text} censor?
+Who was censored?",Where was censoring applied?,When was censoring applied?,
+COERCE,curfew,"Who imposed a curfew?
+Who restricted {recip_text}'s movement?","Who did {actor_text} impose a curfew on?
+Whose movement was restricted?
+Whose movement was restricted by {actor_text}?",Where was the curfew imposed?,When was the curfew imposed?,
+COERCE,martial-law,Who declared martial law?,Who did {actor_text} impose martial law on?,Where was martial law declared?,When was martial law declared?,
+COERCE,arrest,"Who arrested {recip_text}?
+Who detained {recip_text}?","Who was arrested by {actor_text}?
+Who was detained by {actor_text}?",Where were arrests made?,When were arrests made?,
+COERCE,deport,Who deported {recip_text}?,Who did {actor_text} deport?,Where was the deportation made from?,When was the deportation made from?,
+COERCE,withhold,Who withheld or shut off supplies for {recip_text}?,Who did {actor_text} withhold or shut off supplies to?,Where were supplies restricted?,When were supplies restricted?,
+COERCE,misinformation,Who carried out a misinformation campaign against {recip_text}?,Who did {actor_text} carry out a misinformation campaign against?,Where did the misinformation campaign occur?,When did the misinformation campaign occur?,

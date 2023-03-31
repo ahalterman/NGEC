@@ -1,0 +1,19 @@
+{
+    "settings" : {
+        "number_of_shards" : 1,
+        "number_of_replicas" : 0
+    },
+    "mappings" : {
+        "properties" : {
+          "categories" : {"type" : "keyword", "index": "true"},
+          "intro_para" : {"type" : "text"},
+          "title" : {"type" : "text"},
+          "alternative_names" : {"type" : "text", "similarity" : "BM25",
+                                "norms": true},
+	  "redirects" : {"type" : "text", "similarity" : "boolean",
+                                "norms": true},
+          "box_type" : {"type" : "keyword", "index":  "true"},
+	  "infobox": {"type": "flattened"}
+          }
+       }
+}
