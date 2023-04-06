@@ -1,0 +1,376 @@
+event,mode,title
+ACCUSE,,{country_1} Leader Criticizes {country_2}'s Response to Crisis
+ACCUSE,,"Activists Decry {city} Bombings, Highlighting Civilian Casualties"
+ACCUSE,DISAPPROVE,{country_1} Leader Condemns Human Rights Violations in Speech 
+ACCUSE,DISAPPROVE,{country_1} condemns {country_2} for treatment of migrants
+ACCUSE,DISAPPROVE,{country_1} Citizens Express Widespread Disapproval for Leader in Recent Polls
+ACCUSE,INVESTIGATE,ICC States that it will Begin Investigation of Alleged War Crimes in {country_1}
+ACCUSE,INVESTIGATE,Investigation begins into last week's events
+ACCUSE,INVESTIGATE,Police in {country_1} begin probe into last week's scandal
+ACCUSE,INVESTIGATE,Commission forms to study the causes of last year's disaster
+ACCUSE,INVESTIGATE,International Body to Establish Inquiry into Possible {country_1} Genocide
+ACCUSE,ALLEGE,{country_1} President Charged with Human Rights Violations
+ACCUSE,ALLEGE,Six indicted by grand jury
+ACCUSE,ALLEGE,{country_1} brings official complaint against {country_2} for currency manipulation
+ACCUSE,ALLEGE,{country_1}: Former Politician Faces Charges in Bribery Scheme
+ACCUSE,DISAPPROVE,{country_1} Denounces Actions By {country_2}
+ACCUSE,DISAPPROVE,"{country_2} Spokesperson: ""{country_2}'s Behavior is Deplorable"""
+ACCUSE,DISAPPROVE,NGO in {city} Issues Statement Condemning Government
+ACCUSE,DISAPPROVE,Moderate Candidates in {country_1} Denounce Far-Right Party
+ACCUSE,DISAPPROVE,{country_1} Condemns Violence Against Civilians in Ongoing War
+ACCUSE,DISAPPROVE,Activists in {city} Decry New Government Policy
+ACCUSE,ALLEGE,"{country_1} Accuses {country_2} of Trade Violations, Vows WTO Case"
+ACCUSE,ALLEGE,Police in {city} Allege Local Companies Violated Law
+ACCUSE,ALLEGE,{city} Police Charge Dozens After Protest
+ACCUSE,ALLEGE,{country_1} Alleges {country_2} Violated Laws of War
+ACCUSE,ALLEGE,"{city} Man Sues Government, Alleging Rights Violations"
+ACCUSE,ALLEGE,Local NGO Accuses Government of Coverup
+ACCUSE,ALLEGE,Justice Ministry Brings Case Against Former Officials ({country_1})
+ACCUSE,INVESTIGATE,{city} Police Investigating Shooting Death of Local Man
+ACCUSE,INVESTIGATE,{country_1} Convenes Grand Jury to Investigate Corruption
+ACCUSE,INVESTIGATE,{country_1} Begins Investigation Into Past Human Rights Violations
+ACCUSE,INVESTIGATE,{country_1} Launches Commission on {country_2} Abuses
+ACCUSE,INVESTIGATE,Activists Investigate Brutality During {country_1} War
+ACCUSE,INVESTIGATE,{country_1} Parliament Establishes Special Investigative Committee
+ACCUSE,INVESTIGATE,Police in {city} Appeal For Help in Investigation
+AGREE,,"{country_1}, {country_2} Agree to Hold Regular High-Level Meetings"
+AGREE,,{country_1} Leader Agrees to Provide Military Aid to {country_1} In Response to Conflict
+AGREE,,{country_1} Expresses Willingness to Cooperate on New Regional Security Framework
+AGREE,,Finance Ministers Gathered in {city} Agree to Impose New Banking Capital Requirements
+AGREE,,{country_1} and {country_2} have Promised to Ratify a New Treaty
+AGREE,,{country_1} Offers Humanitarian Support to {city} Following Yesterday's Disaster
+AGREE,,{country_1} and {country_2} Agree to New Limits on Conventional Weapons
+AGREE,,Mayor of {city} Reaches an Agreement with Striking Workers
+AGREE,,Leader of {country_1} Expresses New Willingness to Work with the International Community
+AGREE,,Scoop: Secret Negotiations in {city} Produce Promises to Support Rebels
+AID,,"{country_1}, {country_2} Sign Billion Dollar Aid Package"
+AID,,{country_1} Announces Transfer of Additional Humanitarian Aid to {country_2} in Wake of Disaster
+AID,,Military trainers and arms shipment arrive in war-torn {country_1}
+AID,,Emergency humanitarian aid arrives in famine-affected areas of {country_1}
+AID,,U.N. provides humanitarian aid in the wake of last week's disaster
+AID,,Four activists granted asylum in local embassy
+AID,,Major debt relief as IMF agrees to forgive millions owned by {country_1}
+ASSAULT,,{city} Ethnic Clashes Claim 11 Lives
+ASSAULT,,"26 Dead in Jihadist Attacks this Week, Media Reports"
+ASSAULT,AERIAL,{country_1}: Four killed in air strike
+ASSAULT,AERIAL,War planes pummel rebel positions in {country_1}
+ASSAULT,AERIAL,"Allied aircraft enforce no-fly-zone, shooting down {country_1} fighter plane"
+ASSAULT,ABDUCT,"{country_1} Mayor Kidnapped, Killed"
+ASSAULT,ABDUCT,13 Students Abducted from School in {city} by Insurgent Group
+ASSAULT,BEAT,Police Searching for Suspects after Prominent Elder Beaten
+ASSAULT,BEAT,{country_1} Police Officers Beat Protestors at Opposition Rally
+ASSAULT,TORTURE,{country_1}: Widespread Torture During Government Occupation
+ASSAULT,TORTURE,"{country_1} Responsible for Torture, Killing of Prominent Activist"
+ASSAULT,EXECUTE,Video Purpotedly Shows Execution of Second Hostage
+ASSAULT,EXECUTE,Two Local Administrators Beheaded by Insurgents in South {country_1}
+ASSAULT,SEXUAL,Army Urged to End Tactics of Sexual Violence During Ongoing Offensive in West {country_1}
+ASSAULT,SEXUAL,"Survivors of Attack Describe Rapes, Other Atrocities"
+ASSAULT,ASSASSINATE,{country_1} Lawmaker Killed in Targeted Attack in {city}
+ASSAULT,ASSASSINATE,Reporter Shot and Killed by Masked Gunmen in {city}
+ASSAULT,DESTROY,{country_1} Military Razes Two Homes in Response to Deadly Attack
+ASSAULT,DESTROY,"Bandits Injure Six, Raze 47 Houses in {city} Villages"
+ASSAULT,PRIMATIVE,Militants Behead Local Official in {city} Over Government Policy
+ASSAULT,PRIMATIVE,Priest Burned to Death in Southern {country_1}
+ASSAULT,PRIMATIVE,Angry mob throws rocks and bottles
+ASSAULT,PRIMATIVE,Local opposition leader beaten with baseball bat
+ASSAULT,FIREARMS,"Gunmen Storm Agency Headquarters, Kill Police Officers, Several Civilians"
+ASSAULT,FIREARMS,Gunmen Kill 13 in Fresh Attack on {city}
+ASSAULT,EXPLOSIVES,"{country_1} official: Blast rocks country's capital, killing 11"
+ASSAULT,EXPLOSIVES,"Eight Killed, over 45 Injured in {city} Bomb Explosion"
+ASSAULT,SUICIDE-ATTACK,Extremist Group Claims Responsibility for Recent Suicide Bombing
+ASSAULT,SUICIDE-ATTACK,Suicide Car Bomb in {city} Kills At Least 44
+ASSAULT,AERIAL,"{country_1} Air Force Bombs Training Camp, No Survivors"
+ASSAULT,AERIAL,{country_1} Army Says 14 Killed in Air Strike Were Terrorists
+ASSAULT,DRONE,"Drone Strike Killed 2 Civillians, Family Says"
+ASSAULT,DRONE,Drone strikes increase as {country_1} conflict intensifies
+ASSAULT,DRONE,{country_1} UAV destroys enemy targets in {country_2}
+ASSAULT,DRONE,{country_1} Kills Senior Commander in {country_2} With Drone Strike
+ASSAULT,HEAVY-WEAPONS,Shelling in {city} Kills Six Children
+ASSAULT,HEAVY-WEAPONS,Border Shelling Kills Three Civilians in Renewed Tensions between {country_1} and {country_2}
+ASSAULT,CROWD-CONTROL,4 Injured as Police Turn on Protestors in {city}
+ASSAULT,CROWD-CONTROL,Witness: Military Uses Tear Gas on Rally in Central {city}
+ASSAULT,CLEANSING,Mass Deportations Reported in {country_1} in Lead Up to Summit
+ASSAULT,CLEANSING,{country_1} Conflict Enters New Stage with Ethnic Cleansing
+ASSAULT,MASSACRE,{country_1} Bandits Kill 75 in Pre-dawn Massacre: Family Members
+ASSAULT,MASSACRE,"Militants Attack {city} Village, Killing 65 Civilians"
+ASSAULT,UNCONVENTIONAL,Observers Report Use of Chemical Weapons on Civilians in {country_1}
+ASSAULT,UNCONVENTIONAL,Gas Attack in {city} Kills Scores Amidst Government Denials
+COERCE,,"Restrictions to Individual Rights, Media Freedoms Imposed in {country_1} Following Transition"
+COERCE,,Outrage over {country_1} Repression
+COERCE,SIEZE,"Police Raid Human Rights Organization Offices, Seize Computers "
+COERCE,SIEZE,Observers Worry About Indiscriminate Police Raids on Ethnic Community in {country_1}
+COERCE,RESTRICT,{country_1} Village under Military Lockdown Reportedly Running Out of Food
+COERCE,RESTRICT,{country_1} City Blockaded by {country_2} Troops
+COERCE,BAN,{country_1}: Three Human Rights NGOs Banned for Ties to Foreign Governments
+COERCE,BAN,{country_1} Independence Party Formally Outlawed Under New Law
+COERCE,CENSOR,{country_1} Tightens the Screws on Media Freedoms
+COERCE,CENSOR,Social Media Platforms Temporarily Suspended in North {country_1} Following Recent Unrest
+COERCE,CURFEW,"Turmoil in {country_1}: Curfew Imposed After Clashes, Murders"
+COERCE,CURFEW,Nationwide Curfew Imposed Following Recent Protests
+COERCE,MARTIAL-LAW,{country_1} Imposes Martial Law in Response to Election Violence
+COERCE,MARTIAL-LAW,Prime Minister to Extend Martial Law for Another Week
+COERCE,ARREST,Arbitrary Arrests in {country_1} Condemned by International Observers
+COERCE,ARREST,{country_1} Arrests 20 in Regional Crackdown
+COERCE,DEPORT,{country_1} Expels Human Rights Activist in Response to Accusations
+COERCE,DEPORT,Failed Asylum Seeker Deported Back to {country_1}
+COERCE,WITHHOLD,{country_1} Cuts Off Internet in Some Provinces In Light of Unrest
+COERCE,WITHHOLD,Internet Shutdown in {country_1} Begins In Anticipation of Renewed Violence
+COERCE,MISINFORMATION,{country_1} Says Use of Misinformation Response to Ongoing External Threat from {country_2}
+COERCE,MISINFORMATION,Facebook admits to 'coordinated misinformation' aimed at upcoming election in {country_1}
+COERCE,MISINFORMATION,Foreign 'information operation' spreading disinformation uncovered in {country_1}
+COERCE,MISINFORMATION,Incumbent Spreading Fake News Ahead of Upcoming {country_1} Election
+COERCE,MISINFORMATION,State actors are behind disinformation campaign says {country_1}
+COERCE,CYBER,{country_1} News Site Hit by Cyber Attack
+COERCE,CYBER,"Cyber warfare is already happening, says {country_1} government spokesperson"
+COERCE,CYBER,{country_1} Cyberattack Takes Down Communications Network for Several Hours
+COERCE,CYBER,Power plant disabled by cyber attack
+COERCE,CYBER,Foreign hackers target government network in {country_1}
+CONCEDE,,Mayor of {city} Promises to End Curfew After Upcoming Elections
+CONCEDE,,Candidate Promises to Relax Restrictions on Migration if Elected
+CONCEDE,,Mayor of {city} Announced that Police Will Not Beat Protestors
+CONCEDE,,Demonstrators Claim Victory as {country_1} Agrees to All Demands
+CONCEDE,,Rebels in {country_1} Have Announced Their Intention to Lay Down Arms
+CONCEDE,,{country_1}: Evening Curfew will be Lifted Starting Tomorrow
+CONCEDE,,Workers Will End Strike After {country_1} Promises Improved Working Conditions
+CONCEDE,,{country_1} Will Withdraw Complaint at the WTO Against {country_2}
+CONCEDE,,{country_1} Will Shutter Controversal Project After Massive Objections
+CONCEDE,,{country_1} Agrees to Withdraw from Seized Territory
+CONCEDE,,{country_1} Gives Into Demands Made By {country_2}
+CONCEDE,,Government of {country_1} Agrees to Concessions in Order to Avert Crisis
+CONCEDE,,Concessions Made By {country_1} in Order to Avoid Escalation of Conflict
+CONCEDE,,Concessions Made in Order to Secure Peace
+CONCEDE,,Government in {country_1} Makes Concessions in Face of Pressure
+CONCEDE,,{city}: Opposition Group Concedes After Meeting with Prime Minister
+CONCEDE,,{country_1} Makes Concessions to {country_2} on Immigration
+CONCEDE,,{country} Makes Concessions to the EU
+CONCEDE,,Rebel Group Makes Concessions to the {country_1} Government on Peace Talks
+CONCEDE,,{country_1} Makes Concessions to {country_2} on {country_3} Militants
+CONCEDE,,{country_1} Makes Concessions to {country_2} on Arms Embargo
+CONCEDE,,Political group agrees to halt protests in return for promises from {country_1}
+CONCEDE,,{country_1} agrees to remove legal restrictions on local ethnic group
+CONCEDE,,Activists agrees to suspend protests in return for rebels in {country_1} agreeing to a ceasefire
+CONCEDE,,Rebels in {country_1} agree to stop fighting in return for {country_1}'s future concessions
+CONCEDE,,{country_1} declares cease-fire with {country_2}
+CONCEDE,,"Administrative restrictions lifted on organization following talks with {country_1} officials"""
+CONCEDE,,Curfew lifted in {city} following agreement between mayor and protesters
+CONCEDE,,{country_1} Promises Concessions to Opposition
+CONCEDE,,{country_1}  Makes Concessions to {country_2} in Nuclear Talks
+CONCEDE,,{country_1} eases administrative restrictions on civil society organizations
+CONCEDE,,{city} authorities agree to remove curfew in restive city
+CONCEDE,,{country_1} opposition suspends protests for two weeks
+CONCEDE,,Parties in {country_1} war declare ceasefire and agree to withdrawal
+CONCEDE,,{country_1} makes verbal commitment to ease economic restrictions
+CONCEDE,,Reformers gain important concessions in talks with {country_1}
+CONCEDE,,President of {country_1} Suspends Plans to Impose Curfews in Capital
+CONCEDE,,Israeli Prime Minister Benjamin Netanyahu agrees to halt settlement construction in the West Bank
+CONCEDE,,"Rebels in {country_1} announce suspension of attacks against government forces"""
+CONCEDE,,Rebels in {country_1} declare a nationwide ceasefire
+CONCEDE,,{city}: Opposition Group Concedes After Meeting with Prime Minister
+CONCEDE,,{country_1} Makes Concessions to {country_2} on Immigration
+CONCEDE,,{country} Makes Concessions to the EU
+CONCEDE,,Rebel Group Makes Concessions to the {country_1} Government on Peace Talks
+CONCEDE,,{country_1} Makes Concessions to {country_2} on {country_3} Militants
+CONCEDE,,{country_1} Makes Concessions to {country_2} on Arms Embargo
+CONCEDE,,Political group agrees to halt protests in return for promises from {country_1}
+CONCEDE,,{country_1} agrees to remove legal restrictions on local ethnic group
+CONCEDE,,Activists agrees to suspend protests in return for rebels in {country_1} agreeing to a ceasefire
+CONCEDE,,Rebels in {country_1} agree to stop fighting in return for {country_1}'s future concessions
+CONCEDE,,{country_1} declares cease-fire with {country_2}
+CONCEDE,,"Administrative restrictions lifted on organization following talks with {country_1} officials"""
+CONCEDE,,Curfew lifted in {city} following agreement between mayor and protesters
+CONCEDE,,{country_1} Promises Concessions to Opposition
+CONCEDE,,{country_1}  Makes Concessions to {country_2} in Nuclear Talks
+CONCEDE,,{country_1} eases administrative restrictions on civil society organizations
+CONCEDE,,{city} authorities agree to remove curfew in restive city
+CONCEDE,,{country_1} opposition suspends protests for two weeks
+CONCEDE,,Parties in {country_1} war declare ceasefire and agree to withdrawal
+CONCEDE,,{country_1} makes verbal commitment to ease economic restrictions
+CONCEDE,,Reformers gain important concessions in talks with {country_1}
+CONCEDE,,President of {country_1} Suspends Plans to Impose Curfews in Capital
+CONCEDE,,Israeli Prime Minister Benjamin Netanyahu agrees to halt settlement construction in the West Bank
+CONCEDE,,"Rebels in {country_1} announce suspension of attacks against government forces"""
+CONCEDE,,Rebels in {country_1} declare a nationwide ceasefire
+CONSULT,,{country_1}'s Foreign Minister Embarks on Tour of Neighboring Countries
+CONSULT,,Negotiations Ongoing at International Climate Conference
+CONSULT,VISIT,{country_1} Leader Visits {country_2} to Deepen Ties
+CONSULT,VISIT,{country_1} President Visits {city} As Part of Multi-country Tour
+CONSULT,THIRD-PARTY,{country_1} Hosts Peace Talks Between {country_2} Government and Rebels in {city}
+CONSULT,THIRD-PARTY,Meetings Between {country_1} and {country_2} Representatives Begin in {city} as {country_1} Attempts to Broker Ceasefire
+CONSULT,MULTILATERAL,"Key Outcome Agreed to at Recent Global Summit over Climate Change, Environment"
+CONSULT,MULTILATERAL,Multilateral Talks Begin in {city} Over Next Phase of Trade Integration
+CONSULT,PHONE,{country_1} President Defends his Call to {country_2} Leader Over Dispute
+CONSULT,PHONE,"{country_1}, {country_2}, Military Leaders Speak by Phone Amid Heightened Tensions over {country_3}"
+COOPERATE,,{country_1} and {country_2} Sign Trade Deal in Renewed Push for Economic Cooperation
+COOPERATE,,"{country_1}, {country_2}, Hold Joint Military Drills in Southeast {country_1}"
+COOPERATE,,{country_1} and {country_2} Announce Common Currency
+COOPERATE,,{country_1} and {country_2} Expand Intelligence Sharing
+COOPERATE,,{country_1} and {country_2} Expand Judicial Cooperation
+COOPERATE,,{country_1} and {country_2} Begin Joint Military Exercises
+COOPERATE,,NGOs Gathered in {city} Establish New Working Group
+COOPERATE,,Rebels in {country_1}'s Civil War Begin Operating Under New Joint High Command
+COOPERATE,,Record-Breaking Trade Between {country_1} and {country_2}
+COOPERATE,,Troops From {country_1} and {country_2} Held Joint Military Maneuvers
+COOPERATE,,{country_1} Begins Importing Goods from {country_2}
+COOPERATE,,{city} Businesses Increase Investment in {country_1}
+COOPERATE,,Team From {city} Arrives in {country_1} To Begin Cooperation
+COOPERATE,,{country_1} and {country_2} Sign New Extradition Treaty
+COOPERATE,,{country_1} Started Exporting Goods to {country_2} On Wednesday
+COOPERATE,,Bilateral Trade Between {country_1} and {country_2} Growing Rapidly
+COOPERATE,,Leaders from {country_1} and {country_2} Broke Ground on New Joint Infrastructure Project
+COOPERATE,,{country_1} and {country_2} Ratify New Cooperation Agreement
+COOPERATE,,Manufacturers in {country_1} Create Joint Venture With Factories in {country_2}
+COOPERATE,,{country_1} Warship Conducts Joint Training Exercises with {country_2} Navy
+MOBILIZE,,Thousands of Soldiers Deployed to {country_1} Border to Address Unfolding Crisis
+MOBILIZE,,{country_1} Increases Military Readiness in Response to {country_2}
+MOBILIZE,TROOPS,{country_1} Army Calls Upon Conscripts in Preparation for Renewed Offensive
+MOBILIZE,TROOPS,Thousands of Troops Deployed to South {country_1} Amid Simmering Tensions
+MOBILIZE,WEAPONS,Military Ramps up Production in Anticipation of Conflict with {country_1}
+MOBILIZE,WEAPONS,{country_1} Deploys Missile Defense System to Bolster Position
+MOBILIZE,POLICE,Hundreds of Police Called to Capital Following Recent Violence
+MOBILIZE,POLICE,Police Deployed Ahead of {city} Protests
+MOBILIZE,MILITIA,Militia Expands Recruitment in Northwest As Talks Fail
+MOBILIZE,MILITIA,"Pro-government militia begins operating near the {country_1} capital
+"
+MOBILIZE,MILITIA,Pro-government aaramilitary forces begin patrols in {country_1}
+MOBILIZE,MILITIA,Far-right paramilitary group formed in {country_1}
+MOBILIZE,MILITIA,{country_1} Militia Members Called into Action over Recent Tensions
+PROTEST,,Hundreds Rally in Capital over Recent Election Violence
+PROTEST,,Demonstrators Unite across {country_1} as Protests Spread
+PROTEST,DEMO,{country_1}: Peaceful Demonstration Target of Violent Crackdown
+PROTEST,DEMO,Dozens march in downtown demonstration
+PROTEST,DEMO,Peaceful protests begin across {city}
+PROTEST,DEMO,"Over 5,000 Unite for Peaceful Demonstration in Central {city}"
+PROTEST,RIOT,{city} Police Station Burned Down after Night of Rioting
+PROTEST,RIOT,Riots break out across {country} following ethnic violence
+PROTEST,RIOT,Shops smashed by violent protestors in {country_1}
+PROTEST,RIOT,Recent Ethnic Riots in {country_1} Cast Doubt on Transition to Democracy
+PROTEST,RIOT,Police respond with force to rioters in the capital
+PROTEST,STRIKE,Transportation Workers Join Nationwide Strike in {country_1}
+PROTEST,STRIKE,Over Half of {country_1} Teachers Now Out on Wildcat Strike
+PROTEST,STRIKE,Union negotiations collapse as labor strike begins
+PROTEST,STRIKE,Workers in {country_1} announce total work stoppage
+PROTEST,HUNGER,Jailed {country_1} Activist on Hunger Strike in {country_2}
+PROTEST,HUNGER,{country_1}: Imprisoned Regime Critic Announces Hunger Strike
+PROTEST,HUNGER,Activists continue hunger strike
+PROTEST,BOYCOTT,11 Countries Shun Upcoming Summit Due to Concerns over Human Rights
+PROTEST,BOYCOTT,"{country_1}, {country_2}, Announce Boycotts of Upcoming {city} Conference"
+PROTEST,BOYCOTT,Local citizens begin boycotting businesses
+PROTEST,OBSTRUCT,Protest Continues to Disrupt Traffic on Highway near {city}
+PROTEST,OBSTRUCT,Protestors Block {country_1} Border Near {city}
+PROTEST,OBSTRUCT,Protestors block highway as part of demonstration
+REJECT,,{country_1} Government and Rebels Reject Offer of International Mediation
+REJECT,,{country_1} Government Rejects Request to Delay Upcoming Elections
+REJECT,ASSIST,Widespread Suffering as {country_1} Government Refuses Medical Aid
+REJECT,ASSIST,{country_1} Government Declines Humanitarian Assistance to {country_2} As Conditions Worsen
+REJECT,CHANGE,{country_1} Voters Reject Referendum on Peace Process
+REJECT,CHANGE,{country_1} Rejects Peace Agreement Between {country_2} and Rebels
+REJECT,YIELD,{city} Government Declines to End Weekend Curfew Amid Criticism from Rights Groups
+REJECT,YIELD,Rebels in {city} Reject Calls for Ceasefire After Mediation Efforts
+REJECT,MEET,{country_1} Leader Said to Reject Meeting with {country_1} Head of State During {city} Summit
+REJECT,MEET,{country_1}: Chief of Armed Forces Declines Request for High-level Meeting with {country_2} Counterpart
+REQUEST,,{country_1}: Presidential Candidate Demands Formal Review of {country_2} Tariffs
+REQUEST,,"Protestors Demand Faster Action on Unemployment, Inflation"
+REQUEST,ASSIST,"{country_1} asks {country_2} for Military, Economic Aid Amidst Ongoing Crisis"
+REQUEST,ASSIST,{country_1} Leader Expresses Need for International Assistance During Lockdown
+REQUEST,CHANGE,Activists in {country_1} Request End to Controversial Migration Policy
+REQUEST,CHANGE,Foreign Business Demand End to Discriminatory Policies in {city}
+REQUEST,YIELD,Human Rights Group Asks for Release of Final Political Prisoner Held in {country_1}
+REQUEST,YIELD,{country_1} Asks {country_2} to End Sanctions on Energy Sector
+REQUEST,MEET,{country_1} Leader Reportedly Requests Meeting with {country_2}'s President
+REQUEST,MEET,Peacekeepers Urge Rebel Leader to Meet with {country_1} Military in Renewed Mediation Push
+RETREAT,,{country_1} and {country_2} Establish Repatriation Deal
+RETREAT,,"After 13 Years, All Sides Agree to End {country_1} Conflict"
+RETREAT,WITHDRAW,"{country_1} Military Withdrawal from {country_2} Leads to Chaos, Uncertainty"
+RETREAT,WITHDRAW,Military forces withdraw from {country_1}
+RETREAT,WITHDRAW,{country_1} will begin the process of withdrawing some of their military forces from {country_2}
+RETREAT,WITHDRAW,{country_1} Army pulls forces out of contested region
+RETREAT,WITHDRAW,Insurgents Announce Withdrawal from Northern {country_1} Villages
+RETREAT,RELEASE,{country_1} Releases Three Prominent Labor Rights Activists
+RETREAT,RELEASE,"After Three Years of Negotiation, {country_1}'s Rebel Group Releases Hostages"
+RETREAT,RELEASE,Dozens of captives released in {city}
+RETREAT,RETURN,Court Rules that Police Must Return Confiscated Vehicle Seized as Evidence During Raid
+RETREAT,RETURN,{country_1} Rebels Return Seized Property as Part of Peace Accord
+RETREAT,DISARM,{country_1}'s Remaining Rebel Factions Agree to Disarm in Ongoing Push for Peace
+RETREAT,DISARM,Militia lays down arms in disarmament agreement
+RETREAT,DISARM,"Following Transition, {country_1} Rebels Formally Disband"
+RETREAT,CEASEFIRE,"{country_1}, {country_2}, Sign Ceasefire over Border Dispute"
+RETREAT,CEASEFIRE,Ceasefire begins in war-torn region of {country_1}
+RETREAT,CEASEFIRE,Hostilities temporarily stop as talks begin in {city}
+RETREAT,CEASEFIRE,All sides in {country_1} Conflict Agree to Implement Ceasefire
+RETREAT,ACCESS,{country_1} Peacekeepers Arrive in {country_2}
+RETREAT,ACCESS,Election Observers Allowed Back into {country_1} After Reforms Implemented
+RETREAT,RESIGN,{country_1} Leader Quits Following Corruption Accusations
+RETREAT,RESIGN,Mayor of {city} Resigns Amidst Investigation into Wrongdoing
+SANCTION,,{country_1} Suspends Relations with the West in Ongoing Tensions
+SANCTION,,{country_1} Downgrades Diplomatic Ties with {country_2} Amid Ongoing Spat
+SANCTION,CONVICT,{country_1}: Warlord Guilty of Crimes Against Humanity
+SANCTION,CONVICT,Court hands down convictions in corruption case
+SANCTION,CONVICT,Four found guilty after lengthy trial
+SANCTION,CONVICT,Former leader of {country_1} sentenced to prison for serious crimes
+SANCTION,CONVICT,{country_1} General Convicted of War Crimes and Genocide at UN Tribunal
+SANCTION,EXPEL,{country_1} Expels Dozens of Diplomats Following Accusations
+SANCTION,EXPEL,{country_1} Leader Ejects International Observers in {city}
+SANCTION,WITHDRAW,Rebels Quit {country_1} Peace Talks
+SANCTION,WITHDRAW,Human Rights Group Withdraws from {country_1} Amid Increased Security Concerns
+SANCTION,DISCONTINUE,{country_1} Faces Shortages as Sanctions Take Hold
+SANCTION,DISCONTINUE,{country_1} Imposes Sanctions on Company Linked to {country_2}
+SUPPORT,,{country_1} Renews its Support of the World Health Organization
+SUPPORT,,{country_1} Citizens Express Support for Ongoing Protests in {city}
+SUPPORT,,{country_1} and {country_2} Establish Diplomatic Ties
+SUPPORT,,{country_1} and {country_2} Sign Trade Agreement
+SUPPORT,,{country_1} Expresses Support for {country_2}'s Policy
+SUPPORT,,{country_1} Commends {country_2} for Their Action
+SUPPORT,,{country_1} Ratifies Treaty Signed by {country_2}
+SUPPORT,,{country_1} and {country_2} Resume Diplomatic Relations
+SUPPORT,,{country_1} and {country_2} Improve Diplomatic Cooperation
+SUPPORT,,{country_1} and {country_2} Expand Diplomatic Ties
+SUPPORT,,{country_1} Approves of {country_2}'s Policy
+SUPPORT,,{country_1} and {country_2} Cooperate on Climate Change
+SUPPORT,,{country_1} and {country_2} Express Mutual Respect for Each Other
+SUPPORT,,{country_1} commends {country_2} for taking steps to improve human rights
+SUPPORT,,{country_1} and {country_2} ratify agreement on cultural exchange
+SUPPORT,,{country_1} thanks {country_2} for support on political issues
+SUPPORT,,{country_1} commends {country_2}'s handling of recent crisis
+SUPPORT,,{country_1} and {country_2} commit to working together to resolve regional conflict
+SUPPORT,,{country_1} and {country_2} sign landmark peace agreement
+SUPPORT,,{country_1} and {country_2} pledge to increase cooperation
+SUPPORT,,{country_1} and {country_2} Establish Diplomatic Ties
+SUPPORT,,{country_1} and {country_2} Sign Trade Agreement
+SUPPORT,,{country_1} Expresses Support for {country_2}'s Policy
+SUPPORT,,{country_1} Commends {country_2} for Their Action
+SUPPORT,,{country_1} Ratifies Treaty Signed by {country_2}
+SUPPORT,,{country_1} and {country_2} Resume Diplomatic Relations
+SUPPORT,,{country_1} and {country_2} Improve Diplomatic Cooperation
+SUPPORT,,{country_1} and {country_2} Expand Diplomatic Ties
+SUPPORT,,{country_1} Approves of {country_2}'s Policy
+SUPPORT,,{country_1} and {country_2} Cooperate on Climate Change
+SUPPORT,,{country_1} and {country_2} Express Mutual Respect for Each Other
+SUPPORT,,{country_1} commends {country_2} for taking steps to improve human rights
+SUPPORT,,{country_1} and {country_2} ratify agreement on cultural exchange
+SUPPORT,,{country_1} thanks {country_2} for support on political issues
+SUPPORT,,{country_1} commends {country_2}'s handling of recent crisis
+SUPPORT,,{country_1} and {country_2} commit to working together to resolve regional conflict
+SUPPORT,,{country_1} and {country_2} sign landmark peace agreement
+SUPPORT,,{country_1} and {country_2} pledge to increase cooperation
+THREATEN,,Activists Raise Potential of Protests if Election Fraud Ignored
+THREATEN,,Union Workers Threaten Strike if Deal is Not Reached by Midnight
+THREATEN,RESTRICT,Government Floats Possibility of Major Restrictions on Movement over Protests
+THREATEN,RESTRICT,{country_1} Militants Threaten to Restrict Shipping Lanes
+THREATEN,BAN,{country_1} Suggests it May Ban Former General from Running in Election
+THREATEN,BAN,Officials in {country_1} threaten to ban opposition political parties
+THREATEN,BAN,{country_1} threatens to ban civil society organizations
+THREATEN,BAN,{country_1} Leader Raises Possibility of Bans on Opposition Parties
+THREATEN,ARREST,{country_1} Government to Detain Journalists if they Publicize Fraud Allegations
+THREATEN,ARREST,Police threaten to make arrests as unrest continues in {country_1}
+THREATEN,ARREST,Officials promise arrests if corruption continues
+THREATEN,ARREST,{country_1} Police Threaten Protestors with Arrest
+THREATEN,RELATIONS,Leader Says {country_1} Could Suspend Relations with Neighbor over Deal
+THREATEN,RELATIONS,Negotiators from {country_1} threaten to walk away from ongoing talks
+THREATEN,RELATIONS,{country_1} Raises Potential of Suspending Talks with {country_2} over Tensions
+THREATEN,EXPEL,{country_1} Threatens to Expel International Observers
+THREATEN,EXPEL,{country_1} Warns {country_2} of Retaliation after Diplomats Expelled
+THREATEN,TERRITORY,{country_1} Threatens to Annex Territory if Conditions Are Not Met
+THREATEN,TERRITORY,Why is {country_1} Threatening to Invade {country_2}?
+THREATEN,TERRITORY,{country_1} warns {country_2} that it plans to invade
+THREATEN,VIOLENCE,Insurgents Promise to Renew Bombing Campaign in South {country_1} if Talks Fail
+THREATEN,VIOLENCE,{country_1} Leader Threatens to End Protests with Military Force
