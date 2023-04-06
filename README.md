@@ -85,3 +85,8 @@ The coder requires the following libraries and services to be available:
 - Wikipedia running in Elasticsearch (see code in the `setup` directory)
 - Geonames running in Elasticsearch ([repo](https://github.com/openeventdata/es-geonames/tree/es_7)).
 
+## Acknowledgements
+
+This research was sponsored by the Political Instability Task Force (PITF). The PITF is funded by
+the Central Intelligence Agency. The views expressed in this paper are the authors’ alone and do not
+represent the views of the U.S. Government.
