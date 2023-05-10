@@ -119,8 +119,10 @@ class AttributeModel:
         self.silent=silent
         self.batch_size=batch_size
         if gpu:
+            logger.info("Using GPU")
             self.device=0
         else:
+            logger.info("Using CPU")
             self.device=-1
         self.expand_actors=expand_actors
         self.save_intermediate=save_intermediate
@@ -520,6 +522,12 @@ class AttributeModel:
         # for each attribute/question, so we have unique (ID, event_cat, attribute) 
         logger.debug("Starting attribute process")
 
+        # check if all event types have a question
+        event_types = set([i['event_type'] for i in event_list])
+        event_questions = set([i[:-1] for i in self.q_lookup.keys()])
+        diff = event_types - event_questions
+
+
         if not all_qs:
             all_qs = self.do_qa(event_list)
 
@@ -547,7 +555,6 @@ class AttributeModel:
             #except:
             #    #logger.debug(f"expand_actor error on {i, doc}")
             #    pass
-
             # Create a dictionary keyed to the event id for merging
             if i['id'] in q_dict.keys():
                 if i['attribute'] not in q_dict[i['id']].keys():
