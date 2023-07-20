@@ -110,18 +110,37 @@ class AttributeModel:
                  gpu=False,
                  base_path="assets/"
                  ):
+        """
+        Intialize the attribute model
 
-        self.qa_pipeline = pipeline('question-answering', 
+        Paramaters
+        ---------
+        """
+        
+        if gpu:
+            self.device="cuda:0"
+        else:
+            self.device=-1
+        logger.info(f"Device (-1 is CPU): {self.device}")
+        print("Loading model")
+        if model_dir == "allenai/unifiedqa-t5-large":
+            print("Using T5 model")
+            from transformers import T5Tokenizer, T5ForConditionalGeneration
+            self.qa_tokenizer =  T5Tokenizer.from_pretrained(model_dir)
+            self.qa_tokenizer
+            self.qa_model = T5ForConditionalGeneration.from_pretrained(model_dir)
+            self.qa_model.to(self.device)
+            self.t5 = True
+        else:
+            print("Using normal pipeline")
+            self.qa_pipeline = pipeline('question-answering', 
                                     model=model_dir, 
                                     tokenizer=model_dir,
                                     handle_impossible_answer=True)
+            self.t5 = False
         self.threshold = threshold
         self.silent=silent
         self.batch_size=batch_size
-        if gpu:
-            self.device=0
-        else:
-            self.device=-1
         self.expand_actors=expand_actors
         self.save_intermediate=save_intermediate
         self.q_lookup = _load_questions(base_path)
@@ -285,6 +304,39 @@ class AttributeModel:
         extra_text = ''.join([i.text_with_ws for i in extra_text]).strip()
         return extra_text
 
+    def run_t5_model(self, input_string):
+        input_ids = self.qa_tokenizer.encode(input_string, return_tensors="pt")
+        input_ids = input_ids.to(self.device)
+        #res = model.generate(input_ids, num_beams=2, output_scores=True, return_dict_in_generate=True)
+        if self.device.startswith("cuda"):
+            input_ids.to(self.device)
+        outputs = self.qa_model.generate(input_ids, 
+                                         max_new_tokens=20,
+                                         return_dict_in_generate=True, output_scores=True)
+        spans = self.qa_tokenizer.batch_decode(outputs['sequences'], skip_special_tokens=True)
+        answer_text = spans[0]
+        transition_scores = self.qa_model.compute_transition_scores(
+                outputs.sequences, outputs.scores, normalize_logits=True
+                )
+        answer_score = np.mean(np.exp(transition_scores.cpu().numpy()))
+        context = input_string.split("\\n")[1]
+        if answer_text == 'no answer>':
+            answer_text = ""
+            start_char = 0
+            end_char = 0
+        elif not re.search(re.escape(answer_text.lower()), context.lower()):
+            answer_text = ""
+            start_char = 0
+            end_char = 0
+        else:
+            start_char, end_char = re.search(re.escape(answer_text.lower()), context.lower()).span()
+
+        output = {"answer": answer_text, 
+                  "score": answer_score, 
+                  "start": start_char, 
+                  "end": end_char}
+        return output
+
     def do_qa(self, event_list):
         """
         Iterate through the event list, generate questions for each event, and
@@ -300,6 +352,8 @@ class AttributeModel:
                     d = event.copy()
                     d['question'] = q
                     d['attribute'] = att
+                    if self.t5:
+                        d['t5_question'] = d['question'] + "\\n" + d['event_text']
                     qs.append(d)
 
         # Step 2: put the data into a pandas dataframe
@@ -309,10 +363,18 @@ class AttributeModel:
         # run the dataset through the pipeline. This should
         # handle batching automatically
         logger.debug(f"Running QA first pipeline on {len(qs)} questions")
-        all_out = []
-        for out in tqdm(self.qa_pipeline(prod_ds, batch_size=self.batch_size, device=self.device),
-                        disable=self.silent):
-            all_out.append(out)
+        if not self.t5:
+            all_out = []
+            for out in tqdm(self.qa_pipeline(prod_ds, batch_size=self.batch_size, device=self.device),
+                            disable=self.silent):
+                all_out.append(out)
+        else:
+            all_out = []
+            for i in qs:
+                # batch this!
+                out = self.run_t5_model(i['t5_question'])
+                all_out.append(out)
+
 
         # all_out is just the raw output, so we need to add it back to the original inputs
         for n, i in enumerate(qs):
@@ -343,9 +405,15 @@ class AttributeModel:
         recip_ds = make_dataset(rs)
         recip_out = []
         logger.debug(f"Running QA recip step on {len(rs)} stories.")
-        for out in tqdm(self.qa_pipeline(recip_ds, batch_size=self.batch_size, device=self.device), 
-                        total=len(rs), disable=self.silent):
-            recip_out.append(out)
+        if not self.t5:
+            for out in tqdm(self.qa_pipeline(recip_ds, batch_size=self.batch_size, device=self.device), 
+                            total=len(rs), disable=self.silent):
+                recip_out.append(out)
+        else:
+            for i in rs:
+                # batch this!
+                out = self.run_t5_model(i['t5_question'])
+                recip_out.append(out)
 
         #for out in track(self.qa_pipeline(recip_ds, batch_size=self.batch_size, device=self.device)):
         #    recip_out.append(out)
@@ -387,9 +455,15 @@ class AttributeModel:
         actor2_ds = make_dataset(actor2)
         actor2_out = []
         logger.debug(f"Running second actor QA step on {len(actor2)} questions.")
-        for out in tqdm(self.qa_pipeline(actor2_ds, batch_size=self.batch_size, device=self.device), 
-                        total=len(actor2), disable=self.silent):
-            actor2_out.append(out)
+        if not self.t5:
+            for out in tqdm(self.qa_pipeline(actor2_ds, batch_size=self.batch_size, device=self.device), 
+                            total=len(actor2), disable=self.silent):
+                actor2_out.append(out)
+        else:
+            for i in actor2:
+                # batch this!
+                out = self.run_t5_model(i['t5_question'])
+                actor2_out.append(out)
 
         #for out in track(self.qa_pipeline(recip_ds, batch_size=self.batch_size, device=self.device)):
         #    recip_out.append(out)
@@ -420,6 +494,8 @@ class AttributeModel:
 
         When there are overlapping spans (e.g. "Hindu nationalists" and "a group of Hindu nationalists"),
         we pick the version that's most common in the set of answers.
+
+        TODO: allow "" to be an an answer for multiple categories
         """
         # if overlapping spans, ("Hindu nationalists", "a group of Hindu nationalists"), pick the 
         # one that's most common and just use that one.
@@ -506,6 +582,8 @@ class AttributeModel:
           where the QA output is saved separately.
         return_raw_spans: bool
             If True, return the raw spans from the QA model, rather than the "best" answer
+        show_progress: bool
+            If True, show a tqdm progress bar.
 
         Returns
         -----
@@ -519,6 +597,12 @@ class AttributeModel:
         # Step 1: further lengthen the data to generate separate elements
         # for each attribute/question, so we have unique (ID, event_cat, attribute) 
         logger.debug("Starting attribute process")
+
+        # check if all event types have a question
+        event_types = set([i['event_type'] for i in event_list])
+        event_questions = set([i[:-1] for i in self.q_lookup.keys()])
+        diff = event_types - event_questions
+
 
         if not all_qs:
             all_qs = self.do_qa(event_list)
@@ -547,7 +631,6 @@ class AttributeModel:
             #except:
             #    #logger.debug(f"expand_actor error on {i, doc}")
             #    pass
-
             # Create a dictionary keyed to the event id for merging
             if i['id'] in q_dict.keys():
                 if i['attribute'] not in q_dict[i['id']].keys():
