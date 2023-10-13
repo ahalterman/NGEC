@@ -465,7 +465,7 @@ class ActorResolver:
 
     def search_wiki(self, 
                     query_term, 
-                    limit_term=None, 
+                    limit_search_by_term="", 
                     fuzziness="AUTO", 
                     max_results=200,
                     fields=['title^50', 'redirects^50', 'alternative_names'],
@@ -485,7 +485,7 @@ class ActorResolver:
         #if text:
         #    query_term = query_term + " " + text
         logger.debug(f"Using query term: '{query_term}'")
-        if not limit_term:
+        if not limit_search_by_term:
             q = {"multi_match": {"query": query_term,
                              "fields": fields,
                              "type": score_type,
@@ -501,7 +501,7 @@ class ActorResolver:
                              "fuzziness" : fuzziness,
                              "operator": "and"
                         }},
-                          {"multi_match": {"query": limit_term,
+                          {"multi_match": {"query": limit_search_by_term,
                              "fields": limit_fields,
                              "type": "most_fields"}}]}}
 
@@ -742,7 +742,9 @@ class ActorResolver:
         return None
 
         
-    def query_wiki(self, query_term, limit_term="", country="", max_results=200):
+    def query_wiki(self, query_term, context = "", limit_term="", country="", max_results=200):
+        print(f"limit_term in query_wiki: {limit_term}")
+
         results = self.search_wiki(query_term, limit_term, fuzziness=0, max_results=200)
         best = self.pick_best_wiki(query_term, results, limit_term, country=country)
         if best:
@@ -1173,7 +1175,7 @@ class ActorResolver:
         if not best:
             return None
         if best['code_1'] == 'JNK':
-            return None
+            return best
         if best['code_1'] in ["IGO", "MNC", "NGO", "ISM", "EUR", "UNO"]:
             best['country'] = best['code_1']
             best['code_1'] = ""
@@ -1190,7 +1192,7 @@ class ActorResolver:
                      context="", 
                      query_date="today", 
                      known_country="", 
-                     limit_term=""):
+                     search_limit_term=""):
         wiki_codes = [] 
         code_full_text = None
         code_non_ent = None
@@ -1277,14 +1279,14 @@ class ActorResolver:
 
         logger.debug(f"Querying Wikipedia with trimmed text: {trimmed_text}")
         wiki_codes = []
-        wiki = self.query_wiki(trimmed_text, country=known_country, limit_term=limit_term)
+        wiki = self.query_wiki(query_term=trimmed_text, country=known_country, limit_term=search_limit_term)
         if wiki:
             logger.debug(f"Identified a Wiki page: {wiki['title']}")
             wiki_codes = self.wiki_to_code(wiki, query_date)
         else:
             if ent_text:
                 logger.debug(f"No wiki results. Trying again with just proper nouns: {ent_text}")
-                wiki = self.query_wiki(ent_text, context, limit_term=limit_term, country=known_country) 
+                wiki = self.query_wiki(query_term=ent_text, country=known_country, limit_term=search_limit_term) 
                 wiki_codes = self.wiki_to_code(wiki, query_date)
             
 
@@ -1370,8 +1372,8 @@ class ActorResolver:
                         print(actor_text)
                         actor_text = actor_text[0]
                     ## TO DO: get the country here
-                    limit_term = ""
-                    res = self.agent_to_code(actor_text, query_date=query_date, limit_term=limit_term)
+                    limit_word = ""
+                    res = self.agent_to_code(actor_text, query_date=query_date, search_limit_term=limit_word)
                     if res:
                         if 'wiki' in res.keys():
                             v['wiki'] = res['wiki']
