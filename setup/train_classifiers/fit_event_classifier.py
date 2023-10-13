@@ -7,7 +7,8 @@ import numpy as np
 from sklearn.metrics import classification_report
 import skops.io as sio
 
-MODEL_DIR = "" # path to model directory if you've downloaded it
+MODEL_DIR = "" # path to sentence-transformer model directory if you've downloaded it
+# Leave blank to download from huggingface on the fly
 
 with jsonlines.open("gpt_synthetic_events_2023-04-06.jsonl", "r") as f:
     data = list(f.iter())

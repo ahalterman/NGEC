@@ -366,9 +366,9 @@ class AttributeModel:
         if not self.t5:
             # replace the code below with a non-pipeline version that applies
             # the model to the constructed dataset
-            #all_out = self.qa_pipeline(prod_ds, batch_size=self.batch_size, device=self.device)
+            all_out = self.qa_pipeline(prod_ds, batch_size=self.batch_size, device=self.device)
             # NOTE: use batch size of 16 for now. Don't use pipeline.
-            all_out = self.qa_model(prod_ds['question'], prod_ds['context'], batch_size=16, device=self.device)
+            #all_out = self.qa_pipeline(prod_ds['question'], prod_ds['context'], batch_size=16, device=self.device)
             
 
         else:
