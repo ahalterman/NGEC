@@ -7,12 +7,12 @@ import numpy as np
 
 class EventClass:
     def __init__(self, 
-                 model_dir="assets/event_models/",
+                 model_dir="NGEC/assets/event_models/",
                  threshold=0.6, 
                  progress_bar=False,
-                 event_types = [['ACCUSE', 'AGREE', 'AID', 'ASSAULT', 'COERCE', 'CONCEDE',
+                 event_types = ['ACCUSE', 'AGREE', 'AID', 'ASSAULT', 'COERCE', 'CONCEDE',
                                 'CONSULT', 'COOPERATE', 'MOBILIZE', 'PROTEST', 'REJECT', 'REQUEST',
-                                'RETREAT', 'SANCTION', 'SUPPORT', 'THREATEN']]
+                                'RETREAT', 'SANCTION', 'SUPPORT', 'THREATEN']
                  ):
         self.model = SentenceTransformer('sentence-transformers/paraphrase-mpnet-base-v2')
         self.model_dir = model_dir

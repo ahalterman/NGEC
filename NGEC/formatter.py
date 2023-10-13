@@ -6,6 +6,7 @@ import pandas as pd
 import os
 import dateparser
 from datetime import datetime
+import re
 
 import logging
 logger = logging.getLogger(__name__)
@@ -30,20 +31,38 @@ def country_name_dict(base_path):
 def resolve_date(event):
     """
     Create a new 'date_resolved' key with a date in YYYY-MM-DD format
+
+    TODO:
+    include granularity details (e.g. month, year.)?
+    >>> DateDataParser().get_date_data('March 2015')
+    DateData(date_obj=datetime.datetime(2015, 3, 16, 0, 0), period='month', locale='en')
     """
     if 'DATE' not in event['attributes'].keys():
-        event['date_resolved'] = event['pub_date']
+        pub_date = dateparser.parse(event['pub_date']).strftime("%Y-%m-%d")
+        event['date_resolved'] = pub_date
         event['date_raw'] = "No date detected--using publication date"
         return event
     if not event['attributes']['DATE']:
-        event['date_resolved'] = event['pub_date']
+        pub_date = dateparser.parse(event['pub_date']).strftime("%Y-%m-%d")
+        event['date_resolved'] = pub_date
         event['date_raw'] = "<No date detected--using publication date>"
         return event
     
     base_date = dateparser.parse(event['pub_date'])
     raw_date = event['attributes']['DATE'][0]['text']
+    print(f"raw_date: {raw_date}")
+    
     resolved_date = dateparser.parse(date_string=raw_date, settings={'RELATIVE_BASE': base_date,
-                                                                    'PREFER_DATES_FROM': 'past'})
+                                                                    'PREFER_DATES_FROM': "past"})
+    if not resolved_date:
+        if re.search("next|later", raw_date):
+            raw_date = re.sub(r"next|later", "", raw_date).strip()
+            resolved_date = dateparser.parse(date_string=raw_date, settings={'RELATIVE_BASE': base_date,
+                                                                    'PREFER_DATES_FROM': "future"})
+            if resolved_date:
+                event['date_resolved'] = resolved_date.strftime("%Y-%m-%d")
+                event['date_raw'] = raw_date
+                return event
     if not resolved_date:
         event['date_resolved'] = event['pub_date']
         event['date_raw'] = "<dateparser failed to convert relative date--using pub date>"
