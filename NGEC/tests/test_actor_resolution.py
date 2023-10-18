@@ -267,6 +267,14 @@ def test_wiki37(ag):
     assert wiki['title'] == "Juan Carlos Jobet"
     assert len(wiki['intro_para']) > 30
 
+def test_wiki38(ag):
+    wiki = ag.query_wiki("Islamic State")
+    assert wiki['title'] == "Islamic State"
+
+def test_wiki38(ag):
+    wiki = ag.query_wiki("ISIS")
+    assert wiki['title'] == "Islamic State"
+
 ####
 
 def test_nonsense_agent_resolution(ag):
@@ -2208,6 +2216,7 @@ def test_290(ag):
     code = ag.agent_to_code("Bank of Mexico")
     assert code['country'] == "" 
     assert code['code_1'] == ""
+
 
 #### UK issue
 
