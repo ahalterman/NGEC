@@ -89,7 +89,8 @@ def load_spacy_lg():
     nlp = spacy.load("en_core_web_lg", disable=["pos", "dep"])
     return nlp
 
-def load_trf_model(model_dir='sentence-transformers/paraphrase-MiniLM-L6-v2'): ## Change to offline!!
+#def load_trf_model(model_dir='sentence-transformers/paraphrase-MiniLM-L6-v2'): ## Change to offline!!
+def load_trf_model(model_dir='sentence-transformers/all-MiniLM-L12-v2'): ## Change to offline!!
     model = SentenceTransformer(model_dir)
     return model
 
@@ -111,7 +112,7 @@ class ActorResolver:
                 wiki_sort_method="neural",
                 gpu=False):
         if gpu:  
-            self.device=0
+            self.device='cuda'
         else:
             self.device = None
         self.conn = setup_es()
@@ -458,6 +459,7 @@ class ActorResolver:
         qt = re.sub(r"(?<=\d\d)(st|nd|rd|th)\b", '', qt).strip()
         qt = re.sub(r"(?<=\d)(st|nd|rd|th)\b", '', qt).strip()
         qt = re.sub("^\d+? ", "", qt).strip()
+        qt = qt.rstrip("'s").strip()
         if len(qt) < 2:
             return ""
         return qt
@@ -576,7 +578,7 @@ class ActorResolver:
     def pick_best_wiki(self, 
                     query_term, 
                     results, 
-                    text="", 
+                    context="", 
                     country="",
                     wiki_sort_method="neural",
                     rank_fields=['title', 'categories', 'alternative_names', 'redirects']):
@@ -599,28 +601,57 @@ class ActorResolver:
             return None
         logger.debug(f"Pared down to {len(good_res)} good results")
 
+        ### Get exact title matches ###
         exact_matches = []
         for i in good_res:
             if query_term == i['title'] or query_country == i['title']:
+                exact_matches.append(i)
+            elif query_term.upper() == i['title'] or query_country.upper() == i['title']:
                 exact_matches.append(i)
             elif query_term == remove_accents(i['title']) or query_country == remove_accents(i['title']):
                 exact_matches.append(i)
             elif query_term.title() == i['title'] or query_country.title() == i['title']:
                 exact_matches.append(i)
-
-
         logger.debug(f"Number of title matches: {len(exact_matches)}")
-        if len(exact_matches) == 1:
+
+        #### Get exact redirect matches ####
+        redirect_match = []
+        for i in good_res:
+            if query_term in i['redirects'] or query_country in i['redirects']:
+                redirect_match.append(i)
+            elif query_term.title() in i['redirects'] or query_country.title() in i['redirects']:
+                redirect_match.append(i)
+            elif query_term.upper() in i['redirects'] or query_country.upper() in i['redirects']:
+                redirect_match.append(i)
+        logger.debug(f"Number of redirect matches: {len(redirect_match)}")
+
+        #### Get exact alternative name matches ####
+        alt_match = []
+        for i in good_res:
+            if query_term in i['alternative_names']:
+                alt_match.append(i)
+            elif query_term.title() in i['alternative_names']:
+                alt_match.append(i)
+            elif 'infobox' in i.keys():
+                if 'name' in i['infobox'].keys():
+                    if query_term == i['infobox']['name']:
+                        alt_match.append(i)
+        logger.debug(f"Number of alt name matches: {len(alt_match)}")
+
+        ##### Start the logic #######
+        # First pick by exact title match
+        # Change: don't do this if there's a redirect match (ISIS issue)
+        if len(exact_matches) == 1 and len(redirect_match) == 0:
             best = exact_matches[0]
-            best['wiki_reason'] = "Only one exact title match"
+            best['wiki_reason'] = "Only one exact title match and no redirects"
             return best
-        if len(exact_matches) == 2:
-            if len(exact_matches[0]['intro_para']) > len(exact_matches[1]['intro_para']):
-                best = exact_matches[0]
-            else:
-                best = exact_matches[1]
-            best['wiki_reason'] = "Only two exact title matches, returning page with long intro"
-            return best
+        #if len(exact_matches) == 2 and len(redirect_match) == 0:
+        #    if len(exact_matches[0]['intro_para']) > len(exact_matches[1]['intro_para']):
+        #        best = exact_matches[0]
+        #    else:
+        #        best = exact_matches[1]
+        #    best['wiki_reason'] = "Only two exact title matches, returning page with long intro"
+        #    return best
 
 
         if exact_matches: 
@@ -632,26 +663,38 @@ class ActorResolver:
                     best['wiki_reason'] = f"Multiple title exact matches: Returning longest alt names"
                     return best
             elif wiki_sort_method in ["neural", "lcs"]: # TODO: add lcs to this part too
-                try:
-                    wiki_info = self.text_ranker_features(exact_matches, rank_fields)
-                    category_trf = self.trf.encode(wiki_info, show_progress_bar=False, device=self.device)
-                    query_trf = self.trf.encode(query_term, show_progress_bar=False)
-                    sims = 1 - cdist(category_trf, np.expand_dims(query_trf.T, 0), metric="cosine")
-                    exact_matches_sorted = [x for _, x in sorted(zip(sims, exact_matches), reverse=True)]
-                    best = exact_matches_sorted[0]
-                    best['wiki_reason'] = f"Multiple title exact matches: picking by neural similarity. Similarity = {sims[0]}"
-                    return best
-                except Exception as e:
-                    logger.debug(f"{e}")
-                    logger.debug(f"Exception on query term {query_term}")
+                if context:
+                    exact_redirect = exact_matches + redirect_match
+                    intro_paras = [i['intro_para'][0:300] for i in exact_redirect]
+                    short_desc = [i['short_desc'] for i in exact_redirect]
+                    encoded_intros = self.trf.encode(intro_paras, show_progress_bar=False, device=self.device)
+                    encoded_dec = self.trf.encode(short_desc, show_progress_bar=False, device=self.device)
+                    encoded_text = self.trf.encode(context, show_progress_bar=False, device=self.device)
+                    sims_intro = cos_sim(encoded_text, encoded_intros)[0]
+                    sims_desc = cos_sim(encoded_text, encoded_dec)[0]
+                    sims_desc = np.array([i if j != "" else -1 for i, j in zip(sims_desc, short_desc)])
+                    # compute the elementwise mean
+                    sims = (sims_intro + sims_desc) / 2
+                    logger.debug(f"Titles: {[i['title'] for i in exact_redirect]}")
+                    logger.debug(f"Sims: {sims}")
+                    if max(sims) > 0.25:
+                        best = exact_redirect[np.argmax(sims)]
+                        best['wiki_reason'] = f"Multiple exact matches *and* context text provided: picking by neural similarity. Similarity = {max(sims)}"
+                        return best
+                else:
+                    try:
+                        wiki_info = self.text_ranker_features(exact_matches, rank_fields)
+                        category_trf = self.trf.encode(wiki_info, show_progress_bar=False, device=self.device)
+                        query_trf = self.trf.encode(query_term, show_progress_bar=False)
+                        sims = 1 - cdist(category_trf, np.expand_dims(query_trf.T, 0), metric="cosine")
+                        exact_matches_sorted = [x for _, x in sorted(zip(sims, exact_matches), reverse=True)]
+                        best = exact_matches_sorted[0]
+                        best['wiki_reason'] = f"Multiple title exact matches: picking by neural similarity. Similarity = {sims[0]}"
+                        return best
+                    except Exception as e:
+                        logger.debug(f"{e}")
+                        logger.debug(f"Exception on query term {query_term}")
 
-        redirect_match = []
-        for i in good_res:
-            if query_term in i['redirects'] or query_country in i['redirects']:
-                redirect_match.append(i)
-            elif query_term.title() in i['redirects'] or query_country.title() in i['redirects']:
-                redirect_match.append(i)
-        logger.debug(f"Number of redirect matches: {len(redirect_match)}")
 
         if len(redirect_match) == 1:
             best = redirect_match[0]
@@ -674,25 +717,50 @@ class ActorResolver:
                 logger.debug("Redirect exact match; picking by longest alt names.")
                 return best
             elif wiki_sort_method in ["neural", "lcs"]:
+                if context:
+                    intro_paras = [i['intro_para'][0:200] for i in redirect_match]
+                    encoded_intros = self.trf.encode(intro_paras, show_progress_bar=False, device=self.device)
+                    encoded_text = self.trf.encode(context, show_progress_bar=False, device=self.device)
+                    sims = cos_sim(encoded_text, encoded_intros)[0]
+                    if max(sims) > 0.25:
+                        best = redirect_match[np.argmax(sims)]
+                        best['wiki_reason'] = f"Multiple redirect exact matches *and* context text provided: picking by neural similarity. Similarity = {max(sims)}"
+                        return best
                 try:
-                    query_context = query_term + text
+                    query_context = query_term + context
                     wiki_info = self.text_ranker_features(redirect_match, rank_fields)
                     category_trf = self.trf.encode(wiki_info, show_progress_bar=False, device=self.device)
-                    query_trf = self.trf.encode(query_context, show_progress_bar=False)
+                    query_trf = self.trf.encode(query_context, show_progress_bar=False, device=self.device)
                     sims = 1 - cdist(category_trf, np.expand_dims(query_trf.T, 0), metric="cosine")
                     redirect_match = [x for _, x in sorted(zip(sims, redirect_match), reverse=True)]
                     best = redirect_match[0]
                     logger.debug("Redirect exact match; picking by neural similarity.")
-                    best['wiki_reason'] = "Redirect exact match; picking by neural similarity."
+                    best['wiki_reason'] = "Multiple redirect exact match; picking by neural similarity."
                     return best
                 except Exception as e:
                     logger.debug(f"{e}")
                     logger.debug(f"Exception on query term {query_context}")
 
 
+        if len(alt_match) == 1:
+            best = alt_match[0]
+            best['wiki_reason'] = "Single alt name match"
+            return best
 
         ## If no title or redirect matches, including fuzzy matches, do the neural
-        ## similarity thing on titles
+        ## similarity thing
+        if context:
+            logger.debug("Falling back to text--intro neural similarity")
+            intro_paras = [i['intro_para'][0:200] for i in good_res[0:50]]
+            logger.debug(f"Provided text: {context}")
+            logger.debug(f"intro paras: {intro_paras}")
+            encoded_intros = self.trf.encode(intro_paras, show_progress_bar=False, device=self.device)
+            encoded_text = self.trf.encode(context, show_progress_bar=False, device=self.device)
+            sims = cos_sim(encoded_text, encoded_intros)[0]
+            if max(sims) > 0.25:
+                best = good_res[np.argmax(sims)]
+                best['wiki_reason'] = f"Multiple redirect exact matches *and* context text provided: picking by neural similarity. Similarity = {max(sims)}"
+                return best
         logger.debug("Falling back to title neural similarity")
         titles = [i['title'] for i in good_res[0:50]] # just look at first 10? HACK
         if not titles:
@@ -711,8 +779,6 @@ class ActorResolver:
             logger.debug(f"Not a close enough match on neural title sim. Closest was {torch.max(actor_sims)} on {good_res[torch.argmax(actor_sims)]['title']}")
         
 
-        alt_match = [i for i in good_res if query_term in i['alternative_names'] or query_country in i['alternative_names']]
-        logger.debug(f"Number of alternative name matches: {len(alt_match)}")
         if len(alt_match) == 1: 
             best = alt_match[0]
             enc_titles = self.actor_sim.encode([best['title']], show_progress_bar=False)
@@ -742,15 +808,19 @@ class ActorResolver:
         return None
 
         
-    def query_wiki(self, query_term, context = "", limit_term="", country="", max_results=200):
-        print(f"limit_term in query_wiki: {limit_term}")
 
-        results = self.search_wiki(query_term, limit_term, fuzziness=0, max_results=200)
-        best = self.pick_best_wiki(query_term, results, limit_term, country=country)
+    def query_wiki(self,
+                   query_term, 
+                   limit_term="", 
+                   country="", 
+                   context="",
+                   max_results=200):
+        results = self.search_wiki(query_term, limit_term=limit_term, fuzziness=0, max_results=200)
+        best = self.pick_best_wiki(query_term, results, country=country, context=context)
         if best:
             return best
         results = self.search_wiki(query_term, limit_term, fuzziness=1, max_results=max_results)
-        best = self.pick_best_wiki(query_term, results, limit_term, country=country)
+        best = self.pick_best_wiki(query_term, results, country=country, context=context)
         if best:
             return best
 
