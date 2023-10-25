@@ -11,7 +11,8 @@ MODEL_DIR = ""
 #change device to 'cuda' if you have a GPU enabled
 DEVICE = "cpu"
 
-synth_df = pd.read_csv("gpt_synthetic_events_2023-10-19_19.csv")
+synth_df = pd.read_csv("gpt_synthetic_events_2023-10-19_19.csv.zip", 
+                       compression="zip")
 
 
 def load_model(model_name="paraphrase-mpnet-base-v2"):
@@ -23,7 +24,7 @@ def load_model(model_name="paraphrase-mpnet-base-v2"):
         model = SentenceTransformer(f'sentence-transformers/{model_name}')
     return model
 
-model = load_model("all-MiniLM-L6-v2")
+model = load_model()
 encoded = model.encode(synth_df['text'].values, show_progress_bar=True,
                                device=DEVICE).tolist()
 synth_df['encoded'] = encoded

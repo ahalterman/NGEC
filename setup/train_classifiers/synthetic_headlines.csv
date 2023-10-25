@@ -142,7 +142,7 @@ CONCEDE,,Concessions Made in Order to Secure Peace
 CONCEDE,,Government in {country_1} Makes Concessions in Face of Pressure
 CONCEDE,,{city}: Opposition Group Concedes After Meeting with Prime Minister
 CONCEDE,,{country_1} Makes Concessions to {country_2} on Immigration
-CONCEDE,,{country} Makes Concessions to the EU
+CONCEDE,,{country_1} Makes Concessions to the EU
 CONCEDE,,Rebel Group Makes Concessions to the {country_1} Government on Peace Talks
 CONCEDE,,{country_1} Makes Concessions to {country_2} on {country_3} Militants
 CONCEDE,,{country_1} Makes Concessions to {country_2} on Arms Embargo
@@ -167,7 +167,7 @@ CONCEDE,,"Rebels in {country_1} announce suspension of attacks against governmen
 CONCEDE,,Rebels in {country_1} declare a nationwide ceasefire
 CONCEDE,,{city}: Opposition Group Concedes After Meeting with Prime Minister
 CONCEDE,,{country_1} Makes Concessions to {country_2} on Immigration
-CONCEDE,,{country} Makes Concessions to the EU
+CONCEDE,,{country_1} Makes Concessions to the EU
 CONCEDE,,Rebel Group Makes Concessions to the {country_1} Government on Peace Talks
 CONCEDE,,{country_1} Makes Concessions to {country_2} on {country_3} Militants
 CONCEDE,,{country_1} Makes Concessions to {country_2} on Arms Embargo
@@ -223,10 +223,11 @@ COOPERATE,,{country_1} Warship Conducts Joint Training Exercises with {country_2
 MOBILIZE,,Thousands of Soldiers Deployed to {country_1} Border to Address Unfolding Crisis
 MOBILIZE,,{country_1} Increases Military Readiness in Response to {country_2}
 MOBILIZE,TROOPS,{country_1} Army Calls Upon Conscripts in Preparation for Renewed Offensive
-MOBILIZE,TROOPS,Thousands of Troops Deployed to South {country_1} Amid Simmering Tensions
+MOBILIZE,TROOPS,Thousands of Troops Deployed to southern {country_1} Amid Simmering Tensions
 MOBILIZE,WEAPONS,Military Ramps up Production in Anticipation of Conflict with {country_1}
 MOBILIZE,WEAPONS,{country_1} Deploys Missile Defense System to Bolster Position
 MOBILIZE,POLICE,Hundreds of Police Called to Capital Following Recent Violence
+MOBILIZE,POLICE,Governor orders police to {city} center
 MOBILIZE,POLICE,Police Deployed Ahead of {city} Protests
 MOBILIZE,MILITIA,Militia Expands Recruitment in Northwest As Talks Fail
 MOBILIZE,MILITIA,"Pro-government militia begins operating near the {country_1} capital
@@ -241,7 +242,7 @@ PROTEST,DEMO,Dozens march in downtown demonstration
 PROTEST,DEMO,Peaceful protests begin across {city}
 PROTEST,DEMO,"Over 5,000 Unite for Peaceful Demonstration in Central {city}"
 PROTEST,RIOT,{city} Police Station Burned Down after Night of Rioting
-PROTEST,RIOT,Riots break out across {country} following ethnic violence
+PROTEST,RIOT,Riots break out across {country_1} following ethnic violence
 PROTEST,RIOT,Shops smashed by violent protestors in {country_1}
 PROTEST,RIOT,Recent Ethnic Riots in {country_1} Cast Doubt on Transition to Democracy
 PROTEST,RIOT,Police respond with force to rioters in the capital
