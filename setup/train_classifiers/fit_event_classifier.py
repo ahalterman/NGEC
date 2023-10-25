@@ -1,73 +1,78 @@
 from sentence_transformers import SentenceTransformer
-from sklearn.model_selection import train_test_split
-import jsonlines
 import pandas as pd
-from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
 import numpy as np
-from sklearn.metrics import classification_report
 import skops.io as sio
+import os
 
-MODEL_DIR = "" # path to sentence-transformer model directory if you've downloaded it
+# path to sentence-transformer model directory if you've downloaded it
 # Leave blank to download from huggingface on the fly
+MODEL_DIR = "" 
+#change device to 'cuda' if you have a GPU enabled
+DEVICE = "cpu"
 
-with jsonlines.open("gpt_synthetic_events_2023-04-06.jsonl", "r") as f:
-    data = list(f.iter())
-
-df = pd.DataFrame(data)
-df['text'] = df['text'].str.replace("### THIS IS A SYNTHETIC STORY. DO NOT TRUST THE FACTUAL CONTENT OF THIS TEXT. Created by Andy Halterman to train a document-level political event classifer ###", "")
+synth_df = pd.read_csv("gpt_synthetic_events_2023-10-19_19.csv")
 
 
-train, val = train_test_split(df, test_size=0.2, random_state=42)
-text_train = train['text'].values
-text_val = val['text'].values
+def load_model(model_name="paraphrase-mpnet-base-v2"):
+    if MODEL_DIR:
+        # use the local copy
+        model = SentenceTransformer(os.path.join(MODEL_DIR, model_name))
+    else:
+        # otherwise, download from huggingface
+        model = SentenceTransformer(f'sentence-transformers/{model_name}')
+    return model
 
-y_train = train['event']
-y_val = val['event']
+model = load_model("all-MiniLM-L6-v2")
+encoded = model.encode(synth_df['text'].values, show_progress_bar=True,
+                               device=DEVICE).tolist()
+synth_df['encoded'] = encoded
 
-if MODEL_DIR:
-    # use the local copy
-    model = SentenceTransformer(MODEL_DIR + 'huggingface_models/paraphrase-mpnet-base-v2')
-else:
-    # otherwise, download from huggingface
-    model = SentenceTransformer('sentence-transformers/paraphrase-mpnet-base-v2')
 
-# encode the text
-X_train = model.encode(text_train, show_progress_bar=True)
-X_val = model.encode(text_val, show_progress_bar=True)
+def fit_initial_model(synth_df):
+    clf = SVC(class_weight="balanced",
+                kernel="linear",
+                probability=True,
+                C=0.1)
+    y_train = synth_df['label']
+    clf.fit(synth_df['encoded'].to_list(), y_train)
+    pred = pd.DataFrame(clf.predict_proba(encoded))
+    # rename columns with the event names
+    pred.columns = clf.classes_
+    return pred
 
-# this is our hacky way of doing multi-label classification
-# We know ("know"--this is synthetically labeled data) the positive class for each event type, but
-# a story can have multiple event types.
-# This is obviously not ideal, but I got worse results using Cleanlab or positive unlabeled learning.
-
-event_types = df['event'].unique()
+pred = fit_initial_model(synth_df)
+synth_df = pd.concat([synth_df, pred], axis=1)
+event_types = synth_df['label'].unique()
 
 for event in event_types:
-    clf = LogisticRegression(class_weight="balanced")
-    y_train_event = np.array(y_train == event).astype(int)
-    y_val_event = np.array(y_val == event).astype(int)
-    clf.fit(X_train, y_train_event)
+    print(event)
+    # First, sample the positive cases (assuming the prompts are reliable)
+    train_pos_synth = synth_df[synth_df['label'] == event].copy()
+    train_pos_synth['label'] = 1
+    # Now sample negative cases, but don't pick anything that might
+    # be a positive case
+    candidate_neg = synth_df[synth_df[event] < 0.05].copy()
+    # Take 3x as many negative cases as positive cases, or
+    # as many as we can find
+    sample_size = min(candidate_neg.shape[0], 
+                      train_pos_synth.shape[0] * 3)
+    train_neg_synth = candidate_neg.sample(sample_size).copy()
+    train_neg_synth['label'] = 0
+    # Now combine the positive and negative cases
+    print(train_pos_synth.shape, train_neg_synth.shape)
+    train = pd.concat([train_pos_synth, train_neg_synth], axis=0)
+    X_train = np.array(train['encoded'].tolist())
+    y_train = train['label']
+    clf = SVC(class_weight="balanced",
+                kernel="linear",
+                probability=True)
+    clf.fit(X_train, y_train)
 
-    y_pred = clf.predict(X_val)
-    print(classification_report(y_val_event, y_pred))
     sio.dump(clf, f"models/{event}.skops")
     
 
-
-preds = []
-for event, clf in classifiers.items():
-    y_pred = clf.predict_proba(X_val)[:,1]
-    preds.append(y_pred)
-
-pred_array = np.array(preds).T
-bin_pred = pred_array > 0.5
-bin_pred[bin_pred == True]
-
-# conver the matrix of binary predictions to a list of lists
-preds = []
-for i in bin_pred:
-    preds.append([event_types[j] for j in np.where(i == True)[0]])
-
+## For production use, see https://github.com/ahalterman/NGEC/blob/main/NGEC/event_class.py
 
 
 
