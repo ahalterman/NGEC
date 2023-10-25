@@ -1,6 +1,20 @@
 ## Wikipedia in Elasticsearch
 
-The files in this repo will help you set up a reduced Wikipedia in Elasticsearch for easy querying.
+The files in this repo will help you set up a an offline Wikipedia in Elasticsearch for easy querying.
+
+## Quickstart
+
+To get started fast, you can download a pre-built Elasticsearch volume you can use in Docker. See the main NGEC/README.md page for quick-start instructions.
+
+## Building a Wikipedia index
+
+You might have a few reasons for building your own offline Wikipedia index:
+
+- Using a non-English Wikipedia
+- Creating an updated Wikipedia if the pre-built one is stale
+- Customizing the format or structure of the index (if so, you'll need to modify the code)
+
+## Index format
 
 After ingesting, each Wikipedia article will be stored in the following form:
 
@@ -37,7 +51,8 @@ pip install -r requirements.txt
 
 ## Running
 
-**NOTE**: If you want, you can skip the first step (building the Wiki redirect file) by downloading a prebuilt pickle of the redirect dictionary from Google Drive. This is by far the slowest step (it can take up to 24 hours on a slow machine), but there are security concerns about downloading pickle files from the internet. If you're comfortable with that, you can download the file from [here](https://drive.google.com/file/d/1zJviHKAm0bQH9xaq5p-dUrVnknDlFgJK/view?usp=sharing) and place it in the `setup` directory.
+
+**NOTE**: If you want, you can skip the first step (building the Wiki redirect file) by downloading a prebuilt pickle of the redirect dictionary from Google Drive. This is by far the slowest step (it can take up to 24 hours on a slow machine), but there are security concerns about downloading pickle files from the internet. If you're comfortable with running an untrusted pickle file, you can download the file from [here](https://drive.google.com/file/d/1zJviHKAm0bQH9xaq5p-dUrVnknDlFgJK/view?usp=sharing) and place it in the `setup` directory.
 
 To run the entire process, you can run the following command:
 
@@ -72,8 +87,7 @@ To update the index with a new copy of Wikipedia, you should be able to do the f
 
 **A few caveats**:
 
-- it assumes you'll run Redis directly on the machine, not in a container. You may want to switch to running Redis in a container.
 - it assumes you'll run Elasticsearch in a Docker container. You may instead want to run it directly, in which case you should remove the Docker step and make sure that it's running on the port that the script expects.
-- the Python `requirements.txt` files has specific package version numbers. To prevent overriding existing package versions, you may want to set up a virtual enviroment to install into.
+- the Python `requirements.txt` files has specific package version numbers. To prevent overriding existing package versions, you may want to set up a virtual environment to install into.
 
 
