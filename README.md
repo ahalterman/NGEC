@@ -81,26 +81,38 @@ options:
 </details>
 
 
-## Requirements 
+## Quick start
 
 First, create a new Conda environment and install the required libraries:
 
 ```
-conda create -y --name ngec python=3.9 
+conda create -y --name ngec python=3.10
 conda activate ngec
 
-pip install spacy
+pip install spacy, textacy sentence-transformers
 python -m spacy download en_core_web_trf
-pip install textacy sentence-transformers
 pip install elasticsearch elasticsearch_dsl unidecode dateparser
 pip install jsonlines tqdm datasets rich plac 
+pip install mordecai3
 ```
 
-The coder requires the following libraries and services to be available:
+Next, set up an Elasticsearch server with an offline Wikipedia and Geonames.
+Download the pre-built index and start an Elasticsearch instance with the pre-built
+index (the code below assumes you have Docker installed).
 
-- the [Mordecai3 geoparser](https://github.com/ahalterman/mordecai3)
-- Wikipedia running in Elasticsearch (see code in the `setup` directory)
-- [Geonames running in Elasticsearch](https://github.com/openeventdata/es-geonames/).
+```
+# Download a pre-built index from my website:
+wget https://andrewhalterman.com/files/geonames_wiki_index_2023-03-02.tar.gz
+# uncompress it to produce a directory called `geonames_index` (note that this includes both geonames *and* Wiki)
+tar -xvzf geonames_wiki_index_2023-03-02.tar.gz
+# You may need to set write permissions for Docker to run
+# chmod -R 777 ./geonames_index/
+# Then start an Elasticsearch instance in Docker with the uncompressed index as a volume.
+# Later versions of Elasticsearch have not been tested.
+sudo docker run -d -p 127.0.0.1:9200:9200 -e "discovery.type=single-node" -v ./geonames_index/:/usr/share/elasticsearch/data elasticsearch:7.10.1
+```
+
+If you want to build these indices from scratch, see the detailed instructions for [creating an offline Wikipedia index](https://github.com/ahalterman/NGEC/tree/main/setup/wiki) and [setting up offline Geonames in Elasticsearch](https://github.com/openeventdata/es-geonames).
 
 ## Note on the models
 
