@@ -1209,7 +1209,8 @@ class ActorResolver:
                         "HIN": 5,
                         "REL": 1,
                         "": 0,
-                        "JNK": 51
+                        "JNK": 51,
+                        "NON": 60
                         }    
         logger.debug("Using code priority sorting")
         all_codes.sort(key=lambda x: -priority_dict[x['code_1']])
@@ -1245,7 +1246,9 @@ class ActorResolver:
         if not best:
             return None
         if best['code_1'] == 'JNK':
-            return best
+            best['country'] = ""
+        if best['code_1'] == 'NON':
+            best['country'] = ""
         if best['code_1'] in ["IGO", "MNC", "NGO", "ISM", "EUR", "UNO"]:
             best['country'] = best['code_1']
             best['code_1'] = ""
@@ -1255,7 +1258,6 @@ class ActorResolver:
             best['code_1'] = best['country'][3:6]
             best['country'] = best['country'][0:3]
         return best
-      
 
     def agent_to_code(self, 
                      text, 
