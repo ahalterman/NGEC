@@ -133,7 +133,7 @@ def ngec(input_file="NGEC/PLOVER_coding_201908_220302-1049.jsonl",
     event_list = attribute_model.process(event_list, doc_list)
     #print(event_list[0])
     logger.info("Running actor resolution model...")
-    event_list = actor_resolution_model.process(event_list)
+    event_list = actor_resolution_model.process(event_list, doc_list)
     #print(event_list[0])
 
     logger.info("Formatting results...")
