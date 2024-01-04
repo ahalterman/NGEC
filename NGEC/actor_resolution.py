@@ -169,6 +169,97 @@ def expand_options(exact_matches, redirect_match, alt_match, good_res, neural_op
                 break
     return options
         
+def pad_df(df, max_len):
+    # Pad the df with rows of zeros up to max_len
+    # df is a dataframe of shape (num_options, num_features)
+    # max_len is the max number of options for any query
+    # Return a dataframe of shape (max_len, num_features)
+    df = df.copy()
+    num_options = df.shape[0]
+    num_features = df.shape[1]
+    # Create a dataframe of zeros
+    # add a final "null" column
+    if num_options >= max_len:
+        df = df.iloc[0:max_len]
+        new_size = 1
+    else:
+        new_size = (max_len - num_options) + 1
+    #print("new rows:", new_size)
+    zeros = pd.DataFrame(np.zeros((new_size, num_features)), columns=df.columns)
+    # Concatenate the df and zeros
+    df = pd.concat([df, zeros], axis=0)
+    # now pull out the features and the correct column
+    y = df['correct']
+    #print("sum y:", np.sum(y))
+    if np.sum(y) == 0:
+        y.iloc[-1] = 1.0
+    X = df.drop(columns=['correct'])
+    return X, y
+
+class OptionModel(nn.Module):
+    def __init__(self, num_options, num_features, num_filters, fc_hidden_size1, fc_hidden_size2):
+        super(OptionModel, self).__init__()
+
+        # Define a 1D convolutional layer
+        # 1 channel in the input
+        # kernel size should be the size of the features. Make it a tuple so
+        # we apply it to each row (rather than being a square 8x8 kernel)
+        self.conv2d = nn.Conv2d(1, num_filters, kernel_size=(1,num_features), stride=1)
+
+        # dropout
+        self.dropout = nn.Dropout(0.2)
+        # Define fully connected layers
+        self.fc1 = nn.Linear(num_filters * num_options, fc_hidden_size1)
+        self.fc2 = nn.Linear(fc_hidden_size1, fc_hidden_size2)
+        self.fc3 = nn.Linear(fc_hidden_size2, num_options)
+
+    def forward(self, x):
+        # Reshape the input to (batch_size, num_options, num_features, 1)
+        x = x.unsqueeze(3)
+        #print("Original shape:", x.shape)
+        # torch.Size([32, 51, 8, 1])
+        # now permute to (batch_size, 1, num_options, num_features)
+        # WAIT: doing the below yields torch.Size([32, 3, 1, 44]). So it's applying the conv the wrong way. 
+        #x = x.permute(0, 3, 2, 1)
+        # instead:
+        x = x.permute(0, 3, 1, 2)
+        #print("pre-conv shape:", x.shape)
+        # Apply 1D convolution
+        x = F.relu(self.conv2d(x))
+        #x = F.relu(model.conv2d(x))
+
+        #print("post-conv shape:", x.shape)
+        # Flatten the output of the convolutional layer
+        x = x.squeeze()
+        ### ...and reorder into (batch, options, features)
+        ###x = x.permute(0, 2, 1)
+        # flatten to a single vector
+        x = torch.flatten(x, start_dim=1)
+        #print("after flattening:", x.shape)
+        # Apply fully connected layers with ReLU activations
+        x = self.dropout(x)
+        x = F.relu(self.fc1(x))
+        #x = F.relu(model.fc1(x))
+
+        #print("after first FC:", x.shape)
+        x = self.dropout(x)
+        x = F.relu(self.fc2(x))
+        #print(x.shape)
+        x = self.dropout(x)
+        x = self.fc3(x)
+        #print(x.shape)
+        return x
+
+def load_option_model(): 
+    num_options = 51
+    num_features = 7
+    num_filters = 3
+    fc_hidden_size1 = 64
+    fc_hidden_size2 = 32
+    model = OptionModel(num_options, num_features, num_filters, fc_hidden_size1, fc_hidden_size2)
+    model.load_state_dict(torch.load("option_model.pt"))
+    model.eval()
+    return model
 
 class ActorResolver:
     def __init__(self, 
@@ -191,6 +282,7 @@ class ActorResolver:
         self.agents = self.clean_agents(base_path)
         self.trf_matrix = self.load_embeddings(base_path)
         self.nat_list, self.nat_list_cat = load_county_dict(base_path)
+        self.option_model = load_option_model()
         self.base_path = base_path
         self.cache = {}
         self.save_intermediate=save_intermediate
@@ -648,7 +740,51 @@ class ActorResolver:
         good_res = [i for i in good_res if len(i['intro_para']) > 50 if i['intro_para']]
         good_res = [i for i in good_res if i['intro_para'].strip()]
         return good_res
+    
+    def search_to_options(self, query_term, context):
+        results = self.search_wiki(query_term)
+        if type(context) != str:
+            context = ""
+        good_res = self._trim_results(results)
+        exact_matches, redirect_match, alt_match = get_matches(query_term, "", good_res)
+        options = expand_options(exact_matches, redirect_match, alt_match, good_res, neural_options=50)
+        return options
 
+
+    def make_search_features(self, options, context, correct=None):
+        intro_paras = [i['intro_para'][0:300] for i in options]
+        short_desc = [i['short_desc'] for i in options]
+
+        encoded_intros = self.trf.encode(intro_paras, show_progress_bar=False, device=self.device)
+        encoded_dec = self.trf.encode(short_desc, show_progress_bar=False, device=self.device)
+        encoded_context = self.trf.encode(context, show_progress_bar=False, device=self.device)
+
+        sims_intro = cos_sim(encoded_context, encoded_intros)[0]
+        sims_desc = cos_sim(encoded_context, encoded_dec)[0]
+
+        # Set the similarities to -0.5 if the intro or short description is empty
+        sims_intro = np.array([i if j != "" else -0.5 for i, j in zip(sims_intro, intro_paras)])
+        sims_desc = np.array([i if j != "" else -0.5 for i, j in zip(sims_desc, short_desc)])
+
+        features = []
+        for n, i in enumerate(options):
+            features.append({
+                "intro_sim": sims_intro[n],
+                "desc_sim": sims_desc[n],
+                "title_match": i['reason'] == 'title',
+                "redirect_match": i['reason'] == 'redirect',
+                "alt_match": i['reason'] == 'alt',
+                "intro_len": np.sqrt(len(i['intro_para'])),
+                "cat_len": len(i['categories']),
+            })
+
+        features = pd.DataFrame(features)
+        correct = np.array([i['title'] == correct for i in options]).astype(int)
+        features['correct'] = correct
+        features['title_match'] = features['title_match'].astype(int)
+        features['redirect_match'] = features['redirect_match'].astype(int)
+        features['alt_match'] = features['alt_match'].astype(int)
+        return features
 
     def pick_best_wiki(self, 
                     query_term, 
