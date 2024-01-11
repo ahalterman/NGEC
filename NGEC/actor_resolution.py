@@ -22,6 +22,9 @@ from scipy.spatial.distance import cdist
 import pylcs
 from sentence_transformers.util import cos_sim
 import torch
+from torch import nn
+import torch.nn.functional as F
+
 
 import logging
 logger = logging.getLogger(__name__)
@@ -250,16 +253,7 @@ class OptionModel(nn.Module):
         #print(x.shape)
         return x
 
-def load_option_model(): 
-    num_options = 51
-    num_features = 7
-    num_filters = 3
-    fc_hidden_size1 = 64
-    fc_hidden_size2 = 32
-    model = OptionModel(num_options, num_features, num_filters, fc_hidden_size1, fc_hidden_size2)
-    model.load_state_dict(torch.load("option_model.pt"))
-    model.eval()
-    return model
+
 
 class ActorResolver:
     def __init__(self, 
@@ -282,19 +276,35 @@ class ActorResolver:
         self.agents = self.clean_agents(base_path)
         self.trf_matrix = self.load_embeddings(base_path)
         self.nat_list, self.nat_list_cat = load_county_dict(base_path)
-        self.option_model = load_option_model()
+        self.option_model = self.load_option_model(base_path)
         self.base_path = base_path
         self.cache = {}
         self.save_intermediate=save_intermediate
         self.wiki_sort_method = wiki_sort_method
 
 
-    def get_context(self, doc, ent):
+    def get_context(self, doc, actor_text):
         # For a given doc and entity, return the sentence that contains the entity
         # The right way to do this is to use the full entity info from the attribute step.
         # However, we also might want to use the NER info, since we could use the simple first-mentioned 
         # heuristic to get the "corefed" entity.
-        raise NotImplementedError("This function is not yet written.")
+        match_sent = [i.text for i in doc.sents if re.search(re.escape(actor_text), i.text)]
+        if match_sent:
+            return match_sent[0]
+        else:
+            return ""
+
+    def load_option_model(self, base_path): 
+        num_options = 51
+        num_features = 7
+        num_filters = 3
+        fc_hidden_size1 = 64
+        fc_hidden_size2 = 32
+        model = OptionModel(num_options, num_features, num_filters, fc_hidden_size1, fc_hidden_size2)
+        model_file = os.path.join(base_path, "option_model.pt")
+        model.load_state_dict(torch.load(model_file))
+        model.eval()
+        return model
 
     def load_embeddings(self, base_path):
         """
@@ -470,19 +480,6 @@ class ActorResolver:
         code = self.trf_agent_match(trimmed_text, country=country, threshold=threshold)
         return code
 
-#    def long_text_to_agent(self, text, method="cosine", threshold=0.7):
-#        """
-#        Keep only noun phrases and do BERT similarity lookup.
-#        
-#        Question: Better to look up each noun phrase separately, rather than
-#        joining them all together and then looking it up?
-#        """
-#        country, trimmed_text = self.search_nat(text)
-#        doc = self.nlp(trimmed_text)
-#        short_text = self.get_noun_phrases(doc)
-#        code = self.trf_agent_match(short_text, country=country, method=method, threshold=threshold)
-#        return code       
-
     def search_nat(self, text, method="longest", categories=False):
         """
         Grep for a country name in plain text and return a canonical form
@@ -630,6 +627,41 @@ class ActorResolver:
         return qt
 
 
+    def make_search_features(self, options, context, correct=None):
+        intro_paras = [i['intro_para'][0:300] for i in options]
+        short_desc = [i['short_desc'] for i in options]
+
+        encoded_intros = self.trf.encode(intro_paras, show_progress_bar=False, device=ag.device)
+        encoded_dec = self.trf.encode(short_desc, show_progress_bar=False, device=ag.device)
+        encoded_context = self.trf.encode(context, show_progress_bar=False, device=ag.device)
+
+        sims_intro = cos_sim(encoded_context, encoded_intros)[0]
+        sims_desc = cos_sim(encoded_context, encoded_dec)[0]
+
+        # Set the similarities to -0.5 if the intro or short description is empty
+        sims_intro = np.array([i if j != "" else -0.5 for i, j in zip(sims_intro, intro_paras)])
+        sims_desc = np.array([i if j != "" else -0.5 for i, j in zip(sims_desc, short_desc)])
+
+        features = []
+        for n, i in enumerate(options):
+            features.append({
+                "intro_sim": sims_intro[n],
+                "desc_sim": sims_desc[n],
+                "title_match": i['reason'] == 'title',
+                "redirect_match": i['reason'] == 'redirect',
+                "alt_match": i['reason'] == 'alt',
+                "intro_len": np.sqrt(len(i['intro_para'])),
+                "cat_len": len(i['categories']),
+            })
+
+        features = pd.DataFrame(features)
+        correct = np.array([i['title'] == correct for i in options]).astype(int)
+        features['correct'] = correct
+        features['title_match'] = features['title_match'].astype(int)
+        features['redirect_match'] = features['redirect_match'].astype(int)
+        features['alt_match'] = features['alt_match'].astype(int)
+        return features
+
     def search_wiki(self, 
                     query_term, 
                     limit_search_by_term="", 
@@ -751,41 +783,6 @@ class ActorResolver:
         return options
 
 
-    def make_search_features(self, options, context, correct=None):
-        intro_paras = [i['intro_para'][0:300] for i in options]
-        short_desc = [i['short_desc'] for i in options]
-
-        encoded_intros = self.trf.encode(intro_paras, show_progress_bar=False, device=self.device)
-        encoded_dec = self.trf.encode(short_desc, show_progress_bar=False, device=self.device)
-        encoded_context = self.trf.encode(context, show_progress_bar=False, device=self.device)
-
-        sims_intro = cos_sim(encoded_context, encoded_intros)[0]
-        sims_desc = cos_sim(encoded_context, encoded_dec)[0]
-
-        # Set the similarities to -0.5 if the intro or short description is empty
-        sims_intro = np.array([i if j != "" else -0.5 for i, j in zip(sims_intro, intro_paras)])
-        sims_desc = np.array([i if j != "" else -0.5 for i, j in zip(sims_desc, short_desc)])
-
-        features = []
-        for n, i in enumerate(options):
-            features.append({
-                "intro_sim": sims_intro[n],
-                "desc_sim": sims_desc[n],
-                "title_match": i['reason'] == 'title',
-                "redirect_match": i['reason'] == 'redirect',
-                "alt_match": i['reason'] == 'alt',
-                "intro_len": np.sqrt(len(i['intro_para'])),
-                "cat_len": len(i['categories']),
-            })
-
-        features = pd.DataFrame(features)
-        correct = np.array([i['title'] == correct for i in options]).astype(int)
-        features['correct'] = correct
-        features['title_match'] = features['title_match'].astype(int)
-        features['redirect_match'] = features['redirect_match'].astype(int)
-        features['alt_match'] = features['alt_match'].astype(int)
-        return features
-
     def pick_best_wiki(self, 
                     query_term, 
                     results, 
@@ -814,62 +811,42 @@ class ActorResolver:
 
         exact_matches, redirect_match, alt_match = get_matches(query_term, query_country, good_res)
 
-        ##### Start the logic #######
-        # First pick by exact title match
-        # Change: don't do this if there's a redirect match (ISIS issue)
-        #if len(exact_matches) == 1 and len(good_res) < 100:
-        #    best = exact_matches[0]
-        #    best['wiki_reason'] = "Only one exact title match"
-        #    return best
-
-        ### Next, pick by similarity to query term ### 
+        ### If a context is provided, use the neural model to pick the best match.
+        ### Otherwise (see below), use a lower quality rule-based system.
         if context:
             # combine the good matches plus add more of the raw results
             options = expand_options(exact_matches, redirect_match, alt_match, good_res, neural_options)
+            if not options:
+                logger.debug("No options. Returning None")
+                return None
 
-            intro_paras = [i['intro_para'][0:300] for i in options]
-            short_desc = [i['short_desc'] for i in options]
+            features = self.make_search_features(options, context, correct=None)
+            X, _ = pad_df(features, max_len=neural_options)
+            if X.shape[0] == 0:
+                logger.debug("No options. Returning None")
+                return None
+            # terrible hack to make the batch size work.
+            X = np.array([X, X])
+            X = torch.tensor(X, dtype=torch.float32)
 
-            encoded_intros = ag.trf.encode(intro_paras, show_progress_bar=False, device=ag.device)
-            encoded_dec = ag.trf.encode(short_desc, show_progress_bar=False, device=ag.device)
-            encoded_context = ag.trf.encode(context, show_progress_bar=False, device=ag.device)
+            with torch.no_grad():
+                outputs = self.option_model(X)
+                # softmax
+                probs = F.softmax(outputs, dim=1)
+                prob, predicted = torch.max(probs, 1)
+                prob = prob.numpy()[0]
+                predicted = predicted.numpy()[0]
 
-            sims_intro = cos_sim(encoded_context, encoded_intros)[0]
-            sims_desc = cos_sim(encoded_context, encoded_dec)[0]
-            sims_desc = np.array([i if j != "" else -0.5 for i, j in zip(sims_desc, short_desc)])
-            sims = (sims_intro + sims_desc) / 2
-            for n, i in enumerate(options):
-                i['similarity'] = sims[n]
-            debug_title_sims = '\n'.join([f"{s['title']}: {sims[n]}" for n, s in enumerate(options)])
-            logger.debug(debug_title_sims)
-#            if max(sims) > 0.25:
-#                best = options[np.argmax(sims)]
-#                best['wiki_reason'] = f"Context provided: picking by neural similarity. Similarity = {max(sims)}"
-#                return best
-            # new logic here:
-            for n, i in enumerate(options):
-                if i['reason'] == "title" and i['similarity'] > 0.25:
-                    best = i
-                    best['wiki_reason'] = f"Context provided: picking by neural similarity. Similarity = {i['similarity']}"
-                    return best
-        
-            #redirect_alt = []
-            #for i in options:
-            #    if i['reason'] == "redirect" or i['reason'] == "alt":
-            #        redirect_alt.append(i)
-            #if redirect_alt:
-            #    redirect_alt.sort(key=lambda x: x['similarity'], reverse=True)
-            #    if redirect_alt[0]['similarity'] > 0.25:
-            #        best = redirect_alt[0]
-            #        best['wiki_reason'] = f"Context provided: picking by neural similarity. Similarity = {best['similarity']}"
-            #        return best
-            options.sort(key=lambda x: x['similarity'], reverse=True)
-            if options[0]['similarity'] > 0.3:
-                best = options[0]
-                best['wiki_reason'] = f"Context provided: picking by neural similarity. Similarity = {best['similarity']}"
+            if predicted == neural_options:
+                logger.debug("Neural model picked the NULL option. Retruning None.")
+                return None
+            else:
+                logger.debug(f"Neural model picked option {predicted}")
+                best = options[predicted]
+                best['wiki_reason'] = f"Neural model. Prob: {prob}"
                 return best
         
-
+        ## If no context is provided, use a rule-based system to pick the best match.
         if exact_matches: 
             if context:
                 exact_redirect = exact_matches + redirect_match
@@ -892,6 +869,7 @@ class ActorResolver:
                     return best
             # If no context...
             else:
+                logger.debug("No context provided. Using rule-based system.")
                 try:
                     wiki_info = self.text_ranker_features(exact_matches, rank_fields)
                     category_trf = self.trf.encode(wiki_info, show_progress_bar=False, device=self.device)
@@ -1650,7 +1628,10 @@ class ActorResolver:
                     ## TO DO: get the country here
                     limit_word = ""
                     ## Get the context:
-                    if doc_list:
+                    if not doc_list:
+                        logger.debug("No doc list provided, skipping context")
+                        context = ""
+                    else:
                         doc = doc_list[n]
                         if doc:
                             context = self.get_context(doc, actor_text)
@@ -1716,10 +1697,15 @@ class ActorResolver:
 
 if __name__ == "__main__":
     import jsonlines
+    import spacy
+    nlp = spacy.load("en_core_web_lg")
 
     ag = ActorResolver()
-    with jsonlines.open("PLOVER_coding_201908_with_attr.jsonl", "r") as f:
+    with jsonlines.open("/Users/ahalterman/MIT/PITF/NGEC-POLECAT/NGEC/PLOVER_coding_201908_with_attr.jsonl", "r") as f:
         data = list(f.iter())
+
+    doc_list = list(nlp.pipe([i['event_text'] for i in data]))
+    ag.process(data, doc_list)
 
     out = ag.process(data)
     with jsonlines.open("PLOVER_coding_201908_with_actor.jsonl", "w") as f:
