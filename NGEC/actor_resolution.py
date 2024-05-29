@@ -838,7 +838,7 @@ class ActorResolver:
                 predicted = predicted.numpy()[0]
 
             if predicted == neural_options:
-                logger.debug("Neural model picked the NULL option. Retruning None.")
+                logger.debug("Neural model picked the NULL option. Returning None.")
                 return None
             else:
                 logger.debug(f"Neural model picked option {predicted}")
@@ -1001,10 +1001,10 @@ class ActorResolver:
         best = self.pick_best_wiki(query_term, results, country=country, context=context, neural_options=neural_options)
         if best:
             return best
-        results = self.search_wiki(query_term, limit_search_by_term=limit_term, fuzziness=1, max_results=max_results)
-        best = self.pick_best_wiki(query_term, results, country=country, context=context)
-        if best:
-            return best
+        #results = self.search_wiki(query_term, limit_search_by_term=limit_term, fuzziness=1, max_results=max_results)
+        #best = self.pick_best_wiki(query_term, results, country=country, context=context)
+        #if best:
+        #    return best
 
 
     def wiki_to_code(self, wiki, query_date="today", country=""):
@@ -1705,7 +1705,7 @@ if __name__ == "__main__":
         data = list(f.iter())
 
     doc_list = list(nlp.pipe([i['event_text'] for i in data]))
-    ag.process(data, doc_list)
+    #output = ag.process(data[-3:], doc_list[-3:])
 
     out = ag.process(data)
     with jsonlines.open("PLOVER_coding_201908_with_actor.jsonl", "w") as f:
